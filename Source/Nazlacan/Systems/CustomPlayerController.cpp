@@ -40,6 +40,9 @@ void ACustomPlayerController::SetupInputComponent() {
 
     Input->BindAction(LookInput, ETriggerEvent::Triggered, this, &ACustomPlayerController::OnLookInput);
     Input->BindAction(MoveInput, ETriggerEvent::Triggered, this, &ACustomPlayerController::OnMoveInput);
+
+    Input->BindAction(JumpInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnJumpPressed);
+    Input->BindAction(JumpInput, ETriggerEvent::Completed, this, &ACustomPlayerController::OnJumpReleased);
 }
 
 void ACustomPlayerController::OnLookInput(const FInputActionValue& Value) {
@@ -53,7 +56,7 @@ void ACustomPlayerController::OnMoveInput(const FInputActionValue& Value) {
     const FVector2D MovementDirection = Value.Get<FVector2D>();
 
     AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
-    ensure(PlayerCharacter != nullptr);
+    if (PlayerCharacter == nullptr) return;
 
     const FRotator YawRotation(0, GetControlRotation().Yaw, 0);
     const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -61,4 +64,18 @@ void ACustomPlayerController::OnMoveInput(const FInputActionValue& Value) {
 
     PlayerCharacter->AddMovementInput(ForwardDirection, MovementDirection.Y);
     PlayerCharacter->AddMovementInput(RightDirection, MovementDirection.X);
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void ACustomPlayerController::OnJumpPressed() {
+    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
+        PlayerCharacter->Jump();
+    }
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void ACustomPlayerController::OnJumpReleased() {
+    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
+        PlayerCharacter->StopJumping();
+    }
 }

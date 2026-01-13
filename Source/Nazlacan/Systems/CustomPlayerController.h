@@ -22,6 +22,9 @@ class NAZLACAN_API ACustomPlayerController : public APlayerController {
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveInput;
 
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* JumpInput;
+
 	TWeakObjectPtr<AMainCharacter> ControlledCharacter;
 
 protected:
@@ -33,6 +36,8 @@ protected:
 private:
 	void OnLookInput(const FInputActionValue& Value);
 	void OnMoveInput(const FInputActionValue& Value);
+	void OnJumpPressed();
+	void OnJumpReleased();
 
 	void SetControlledCharacter(APawn* InPawn);
 };

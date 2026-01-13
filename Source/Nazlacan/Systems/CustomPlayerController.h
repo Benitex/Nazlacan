@@ -25,11 +25,14 @@ class NAZLACAN_API ACustomPlayerController : public APlayerController {
 	TWeakObjectPtr<AMainCharacter> ControlledCharacter;
 
 protected:
-	virtual void OnPossess(APawn* APawn) override;
+	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
+	virtual void OnRep_Pawn() override;
 	virtual void SetupInputComponent() override;
 
 private:
 	void OnLookInput(const FInputActionValue& Value);
 	void OnMoveInput(const FInputActionValue& Value);
+
+	void SetControlledCharacter(APawn* InPawn);
 };

@@ -22,10 +22,6 @@ void AMainCharacter::BeginPlay() {
 	Super::BeginPlay();
 }
 
-void AMainCharacter::Tick(float DeltaTime) {
+void AMainCharacter::Tick(const float DeltaTime) {
 	Super::Tick(DeltaTime);
-}
-
-void AMainCharacter::Move(float Forward, float Right) {
-	
 }

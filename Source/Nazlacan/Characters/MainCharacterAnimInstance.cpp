@@ -1,0 +1,35 @@
+#include "MainCharacterAnimInstance.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
+void UMainCharacterAnimInstance::NativeInitializeAnimation() {
+    Super::NativeInitializeAnimation();
+    LoadCharacter();
+}
+
+void UMainCharacterAnimInstance::LoadCharacter() {
+    AnimatedCharacter = Cast<AMainCharacter>(TryGetPawnOwner());
+    if (AnimatedCharacter) {
+        AnimatedCharacterMovementComponent = Cast<UCharacterMovementComponent>(AnimatedCharacter->GetMovementComponent());
+    }
+}
+
+void UMainCharacterAnimInstance::NativeUpdateAnimation(const float DeltaSeconds) {
+    Super::NativeUpdateAnimation(DeltaSeconds);
+
+    if (!AnimatedCharacter || !AnimatedCharacterMovementComponent) LoadCharacter();
+    if (!AnimatedCharacter || !AnimatedCharacterMovementComponent) return;
+
+    Speed = AnimatedCharacter->GetVelocity().Size();
+    bIsInAir = AnimatedCharacterMovementComponent->IsFalling();
+    SetPitchAndYaw();
+}
+
+void UMainCharacterAnimInstance::SetPitchAndYaw() {
+    const FRotator CharacterRotator = AnimatedCharacter->GetActorRotation();
+    const FRotator CameraRotator = AnimatedCharacter->GetBaseAimRotation();
+    FRotator FinalRotator = CameraRotator - CharacterRotator;
+    FinalRotator.Normalize();
+
+    Pitch = FinalRotator.Pitch;
+    Yaw = FinalRotator.Yaw;
+}

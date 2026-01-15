@@ -22,11 +22,16 @@ class NAZLACAN_API AMainCharacter : public ACharacter {
 	UPROPERTY(EditAnywhere, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	bool bShouldLagCameraOnMovement = false;
 
+	// How much to reduce the upward velocity after stopping a jump
+	UPROPERTY(EditAnywhere, Category = "Character Movement: Jumping / Falling", meta = (ClampMin = 0, ClampMax = 1, AllowPrivateAccess = "true"))
+	float JumpBreakMultiplier = 0;
+
 public:
 	AMainCharacter();
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 	virtual void Tick(float DeltaTime) override;
-	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void StopJumping() override;
 
 protected:
 	virtual void BeginPlay() override;

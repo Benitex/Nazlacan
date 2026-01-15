@@ -1,5 +1,7 @@
 #include "MainCharacter.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 AMainCharacter::AMainCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
     SetupCamera();
@@ -18,6 +20,15 @@ void AMainCharacter::SetupCamera() {
 	FollowCamera->bUsePawnControlRotation = false;
 }
 
+void AMainCharacter::OnConstruction(const FTransform& Transform) {
+	Super::OnConstruction(Transform);
+
+	USkeletalMeshComponent* CurrentMesh = GetMesh();
+	ensure(CurrentMesh != nullptr);
+	CurrentMesh->HideBoneByName(TEXT("bow_base"), EPhysBodyOp::PBO_None);
+	CurrentMesh->HideBoneByName(TEXT("arrow_nock"), EPhysBodyOp::PBO_None);
+}
+
 void AMainCharacter::BeginPlay() {
 	Super::BeginPlay();
 }
@@ -26,11 +37,11 @@ void AMainCharacter::Tick(const float DeltaTime) {
 	Super::Tick(DeltaTime);
 }
 
-void AMainCharacter::OnConstruction(const FTransform& Transform) {
-	Super::OnConstruction(Transform);
+void AMainCharacter::StopJumping() {
+	Super::StopJumping();
 
-	USkeletalMeshComponent* CurrentMesh = GetMesh();
-	ensure(CurrentMesh != nullptr);
-	CurrentMesh->HideBoneByName(TEXT("bow_base"), EPhysBodyOp::PBO_None);
-	CurrentMesh->HideBoneByName(TEXT("arrow_nock"), EPhysBodyOp::PBO_None);
+	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+	if (MovementComponent && MovementComponent->Velocity.Z > 0) {
+		MovementComponent->Velocity.Z *= JumpBreakMultiplier;
+	}
 }

@@ -22,10 +22,36 @@ void AMainCharacter::SetupCamera() {
 
 void AMainCharacter::BeginPlay() {
 	Super::BeginPlay();
+
+	if (RightHandWeapon.DataTable != nullptr && RightHandWeapon.RowName != NAME_None) {
+		EquipWeapon(RightHandWeapon, true);
+	}
+	if (LeftHandWeapon.DataTable != nullptr && LeftHandWeapon.RowName != NAME_None) {
+		EquipWeapon(LeftHandWeapon, false);
+	}
 }
 
 void AMainCharacter::Tick(const float DeltaTime) {
 	Super::Tick(DeltaTime);
+}
+
+void AMainCharacter::EquipWeapon(FDataTableRowHandle& WeaponRowHandle, const bool bIsRightHand) {
+	// TODO remove previous weapon if any
+
+	static const FString ContextString(TEXT("Equipping Weapon"));
+	const FWeaponData* WeaponData = WeaponRowHandle.DataTable->FindRow<FWeaponData>(WeaponRowHandle.RowName, ContextString);
+	returnIfNull(WeaponData);
+
+	const FName SocketName = bIsRightHand ? RightHandSocketName : LeftHandSocketName;
+	const FTransform SocketTransform = GetMesh()->GetSocketTransform(SocketName);
+	AWeapon* SpawnedWeapon = AWeapon::Spawn(*WeaponData, SocketTransform, this);
+	returnIfNull(SpawnedWeapon);
+
+	SpawnedWeapon->AttachToComponent(
+		GetMesh(),
+		FAttachmentTransformRules::SnapToTargetIncludingScale,
+		SocketName
+	);
 }
 
 void AMainCharacter::StopJumping() {

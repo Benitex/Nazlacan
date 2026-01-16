@@ -8,12 +8,6 @@ UCLASS()
 class NAZLACAN_API AMainCharacter : public ACharacter {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	FDataTableRowHandle RightHandWeapon;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	FDataTableRowHandle LeftHandWeapon;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	FName RightHandSocketName = TEXT("right_hand_socket");
 	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
@@ -27,14 +21,10 @@ class NAZLACAN_API AMainCharacter : public ACharacter {
 public:
 	AMainCharacter();
 
-	virtual void Tick(float DeltaTime) override;
 	virtual void StopJumping() override;
 
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void EquipWeapon(FDataTableRowHandle& WeaponRowHandle, bool bIsRightHand);
-
-protected:
-	virtual void BeginPlay() override;
+	FName GetRightHandSocketName() const;
+	FName GetLeftHandSocketName() const;
 
 private:
 	void SetupCamera();

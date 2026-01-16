@@ -1,5 +1,4 @@
 #include "Weapon.h"
-
 #include "Nazlacan/Macros.h"
 
 AWeapon* AWeapon::Spawn(const FWeaponData& WeaponData, const FTransform& SpawnPosition, APawn* NewOwner) {
@@ -36,6 +35,8 @@ AWeapon::AWeapon() {
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = WeaponMesh;
 	WeaponMesh->SetCollisionProfileName(TEXT("NoCollision"));
+
+	bReplicates = true;
 }
 
 void AWeapon::BeginPlay() {

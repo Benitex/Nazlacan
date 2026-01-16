@@ -1,6 +1,9 @@
 #include "MainCharacter.h"
-
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Nazlacan/Weapons/Weapon.h"
+#include "Camera/CameraComponent.h"
+#include "Nazlacan/Macros.h"
 
 AMainCharacter::AMainCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -8,25 +11,13 @@ AMainCharacter::AMainCharacter() {
 }
 
 void AMainCharacter::SetupCamera() {
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	USpringArmComponent* CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-
 	CameraBoom->bUsePawnControlRotation = true;
-	CameraBoom->bEnableCameraLag = bShouldLagCameraOnMovement;
-	CameraBoom->bEnableCameraRotationLag = bShouldLagCameraOnMovement;
 
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	UCameraComponent* FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
-}
-
-void AMainCharacter::OnConstruction(const FTransform& Transform) {
-	Super::OnConstruction(Transform);
-
-	USkeletalMeshComponent* CurrentMesh = GetMesh();
-	ensure(CurrentMesh != nullptr);
-	CurrentMesh->HideBoneByName(TEXT("bow_base"), EPhysBodyOp::PBO_None);
-	CurrentMesh->HideBoneByName(TEXT("arrow_nock"), EPhysBodyOp::PBO_None);
 }
 
 void AMainCharacter::BeginPlay() {

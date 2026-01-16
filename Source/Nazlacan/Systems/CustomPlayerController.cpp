@@ -1,5 +1,6 @@
 #include "CustomPlayerController.h"
 #include "EnhancedInputComponent.h"
+#include "Nazlacan/Macros.h"
 
 void ACustomPlayerController::OnPossess(APawn* InPawn) {
     Super::OnPossess(InPawn);
@@ -27,7 +28,7 @@ void ACustomPlayerController::SetControlledCharacter(APawn* InPawn) {
 
     if (IsLocalPlayerController()) {
         UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-        ensure(Subsystem != nullptr);
+        returnIfNull(Subsystem);
         Subsystem->AddMappingContext(InputMap, 0);
     }
 }
@@ -36,7 +37,7 @@ void ACustomPlayerController::SetupInputComponent() {
     Super::SetupInputComponent();
 
     UEnhancedInputComponent *Input = Cast<UEnhancedInputComponent>(Super::InputComponent);
-    ensure(Input != nullptr);
+    returnIfNull(Input);
 
     Input->BindAction(LookInput, ETriggerEvent::Triggered, this, &ACustomPlayerController::OnLookInput);
     Input->BindAction(MoveInput, ETriggerEvent::Triggered, this, &ACustomPlayerController::OnMoveInput);

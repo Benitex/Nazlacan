@@ -39,5 +39,6 @@ private:
 	void OnJumpPressed();
 	void OnJumpReleased();
 
+	UFUNCTION(BlueprintCallable, Category = "Controller")
 	void SetControlledCharacter(APawn* InPawn);
 };

@@ -1,5 +1,6 @@
 #include "MainCharacterAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Nazlacan/Macros.h"
 
 void UMainCharacterAnimInstance::NativeInitializeAnimation() {
     Super::NativeInitializeAnimation();
@@ -10,6 +11,11 @@ void UMainCharacterAnimInstance::LoadCharacter() {
     AnimatedCharacter = Cast<AMainCharacter>(TryGetPawnOwner());
     if (AnimatedCharacter) {
         AnimatedCharacterMovementComponent = Cast<UCharacterMovementComponent>(AnimatedCharacter->GetMovementComponent());
+
+        USkeletalMeshComponent* AnimatedCharacterMesh = AnimatedCharacter->GetMesh();
+        returnIfNull(AnimatedCharacterMesh);
+        AnimatedCharacterMesh->HideBoneByName(TEXT("bow_base"), EPhysBodyOp::PBO_None);
+        AnimatedCharacterMesh->HideBoneByName(TEXT("arrow_nock"), EPhysBodyOp::PBO_None);
     }
 }
 

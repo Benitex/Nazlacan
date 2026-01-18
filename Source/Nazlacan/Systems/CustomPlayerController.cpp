@@ -53,6 +53,8 @@ void ACustomPlayerController::SetupInputComponent() {
 
     Input->BindAction(SprintInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnSprintPressed);
     Input->BindAction(SprintInput, ETriggerEvent::Completed, this, &ACustomPlayerController::OnSprintReleased);
+
+    Input->BindAction(DodgeInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnDodgePressed);
 }
 
 void ACustomPlayerController::OnLookInput(const FInputActionValue& Value) {
@@ -96,5 +98,13 @@ void ACustomPlayerController::OnSprintPressed() {
 void ACustomPlayerController::OnSprintReleased() {
     if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
         PlayerCharacter->StopSprinting();
+    }
+}
+
+void ACustomPlayerController::OnDodgePressed() {
+    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
+        FVector Direction = PlayerCharacter->GetLastMovementInputVector();
+        Direction.Normalize();
+        PlayerCharacter->StartDodging(Direction);
     }
 }

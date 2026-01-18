@@ -11,7 +11,7 @@ AMainCharacter::AMainCharacter() {
 
 void AMainCharacter::PostInitializeComponents() {
 	Super::PostInitializeComponents();
-	MaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	DefaultMaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	LoadSockets();
 }
 
@@ -53,5 +53,16 @@ void AMainCharacter::StartSprinting() const {
 }
 
 void AMainCharacter::StopSprinting() const {
-	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
+}
+
+void AMainCharacter::StartDodging(FVector Direction) {
+	if (GetCharacterMovement()->IsFalling()) return;
+
+	if (Direction.IsNearlyZero()) {
+		Direction = GetActorForwardVector();
+	}
+
+	LaunchCharacter(Direction * DodgeIntensity, true, false);
+	PlayAnimMontage(DodgeAnimationMontage);
 }

@@ -1,3 +1,4 @@
+// ReSharper disable CppMemberFunctionMayBeConst
 #include "CustomPlayerController.h"
 #include "CustomPlayerState.h"
 #include "EnhancedInputComponent.h"
@@ -49,6 +50,9 @@ void ACustomPlayerController::SetupInputComponent() {
 
     Input->BindAction(JumpInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnJumpPressed);
     Input->BindAction(JumpInput, ETriggerEvent::Completed, this, &ACustomPlayerController::OnJumpReleased);
+
+    Input->BindAction(SprintInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnSprintPressed);
+    Input->BindAction(SprintInput, ETriggerEvent::Completed, this, &ACustomPlayerController::OnSprintReleased);
 }
 
 void ACustomPlayerController::OnLookInput(const FInputActionValue& Value) {
@@ -57,7 +61,6 @@ void ACustomPlayerController::OnLookInput(const FInputActionValue& Value) {
     AddPitchInput(Vector.Y);
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
 void ACustomPlayerController::OnMoveInput(const FInputActionValue& Value) {
     const FVector2D MovementDirection = Value.Get<FVector2D>();
 
@@ -72,16 +75,26 @@ void ACustomPlayerController::OnMoveInput(const FInputActionValue& Value) {
     PlayerCharacter->AddMovementInput(RightDirection, MovementDirection.X);
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
 void ACustomPlayerController::OnJumpPressed() {
     if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
         PlayerCharacter->Jump();
     }
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
 void ACustomPlayerController::OnJumpReleased() {
     if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
         PlayerCharacter->StopJumping();
+    }
+}
+
+void ACustomPlayerController::OnSprintPressed() {
+    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
+        PlayerCharacter->StartSprinting();
+    }
+}
+
+void ACustomPlayerController::OnSprintReleased() {
+    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
+        PlayerCharacter->StopSprinting();
     }
 }

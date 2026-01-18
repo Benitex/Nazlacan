@@ -16,6 +16,7 @@ void UMainCharacterAnimInstance::LoadCharacter() {
         returnIfNull(AnimatedCharacterMesh);
         AnimatedCharacterMesh->HideBoneByName(TEXT("bow_base"), EPhysBodyOp::PBO_None);
         AnimatedCharacterMesh->HideBoneByName(TEXT("arrow_nock"), EPhysBodyOp::PBO_None);
+        AnimatedCharacterMesh->HideBoneByName(TEXT("feathers"), EPhysBodyOp::PBO_None);
     }
 }
 

@@ -6,7 +6,7 @@
 
 void ACustomPlayerState::EquipWeapon(FDataTableRowHandle& WeaponRowHandle, const uint8 HandIndex) {
     returnIfNull(WeaponRowHandle.DataTable);
-    AMainCharacter* MainCharacter = Cast<AMainCharacter>(GetPawn());
+    AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
     returnIfNull(MainCharacter);
     USkeletalMeshComponent* Mesh = MainCharacter->GetMesh();
     returnIfNull(Mesh);
@@ -18,10 +18,6 @@ void ACustomPlayerState::EquipWeapon(FDataTableRowHandle& WeaponRowHandle, const
     returnIfNull(WeaponData);
 
     const FName SocketName = HandIndex == RightHandIndex ? MainCharacter->GetRightHandSocketName() : MainCharacter->GetLeftHandSocketName();
-    if (!Mesh->DoesSocketExist(SocketName)) {
-        UE_LOG(LogTemp, Error, TEXT("Failed to equip %s in Socket %s because it does not exist on mesh"), *WeaponRowHandle.RowName.ToString(), *SocketName.ToString());
-        return;
-    }
     const FTransform SocketTransform = Mesh->GetSocketTransform(SocketName);
 
     AWeapon* SpawnedWeapon = AWeapon::Spawn(*WeaponData, SocketTransform, MainCharacter);

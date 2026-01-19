@@ -1,6 +1,7 @@
 #include "MainCharacterAnimInstance.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Nazlacan/Macros.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Nazlacan/Systems/CustomPlayerState.h"
 
 void UMainCharacterAnimInstance::NativeInitializeAnimation() {
     Super::NativeInitializeAnimation();
@@ -11,6 +12,7 @@ void UMainCharacterAnimInstance::LoadCharacter() {
     AnimatedCharacter = Cast<AMainCharacter>(TryGetPawnOwner());
     if (AnimatedCharacter) {
         AnimatedCharacterMovementComponent = Cast<UCharacterMovementComponent>(AnimatedCharacter->GetMovementComponent());
+        AnimatedPlayerState = AnimatedCharacter->GetPlayerState<ACustomPlayerState>();
 
         USkeletalMeshComponent* AnimatedCharacterMesh = AnimatedCharacter->GetMesh();
         returnIfNull(AnimatedCharacterMesh);
@@ -23,12 +25,13 @@ void UMainCharacterAnimInstance::LoadCharacter() {
 void UMainCharacterAnimInstance::NativeUpdateAnimation(const float DeltaSeconds) {
     Super::NativeUpdateAnimation(DeltaSeconds);
 
-    if (!AnimatedCharacter || !AnimatedCharacterMovementComponent) LoadCharacter();
-    if (!AnimatedCharacter || !AnimatedCharacterMovementComponent) return;
+    if (!AnimatedCharacter || !AnimatedCharacterMovementComponent || !AnimatedPlayerState) LoadCharacter();
+    if (!AnimatedCharacter || !AnimatedCharacterMovementComponent || !AnimatedPlayerState) return;
 
     Speed = AnimatedCharacter->GetVelocity().Size();
     bIsInAir = AnimatedCharacterMovementComponent->IsFalling();
     SetPitchAndYaw();
+    CombatStyle = AnimatedPlayerState->GetCombatStyle();
 }
 
 void UMainCharacterAnimInstance::SetPitchAndYaw() {

@@ -23,6 +23,8 @@ public:
 
 	AWeapon();
 
+	FWeaponData GetWeaponData() const { return WeaponDataTable; }
+
 protected:
 	virtual void BeginPlay() override;
 

@@ -32,15 +32,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	FDataTableRowHandle DefaultWeapons[2];
 
-	UPROPERTY(BlueprintReadWrite, Category = "Combat")
-	ECombatStyle CombatStyle = ECombatStyle::SwordAndSorcery;
-
 	static constexpr uint8 RightHandIndex = 0;
 	static constexpr uint8 LeftHandIndex = 1;
 
 protected:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleInstanceOnly)
 	AWeapon* EquippedWeapons[2];
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "Combat")
+	ECombatStyle CombatStyle = ECombatStyle::SwordAndSorcery;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
@@ -54,6 +54,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void RemoveWeapon(uint8 HandIndex);
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	ECombatStyle GetCombatStyle() const { return CombatStyle; }
 
 private:
 	void UpdateCombatStyle();

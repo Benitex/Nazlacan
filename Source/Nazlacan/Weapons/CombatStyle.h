@@ -7,7 +7,7 @@ UENUM(BlueprintType)
 enum class ECombatStyle : uint8 {
     DualWielding,
     TwoHanded,
-    TwoSpells,
+    Spellcasting,
     SwordAndSorcery,
     Archery,
 };

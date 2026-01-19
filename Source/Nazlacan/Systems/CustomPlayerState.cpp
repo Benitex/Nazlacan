@@ -25,6 +25,8 @@ void ACustomPlayerState::EquipWeapon(FDataTableRowHandle& WeaponRowHandle, const
 
     SpawnedWeapon->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetIncludingScale, SocketName);
     EquippedWeapons[HandIndex] = SpawnedWeapon;
+
+    UpdateCombatStyle();
 }
 
 void ACustomPlayerState::EquipWeapons(FDataTableRowHandle& RightHandWeapon, FDataTableRowHandle& LeftHandWeapon) {
@@ -48,5 +50,25 @@ void ACustomPlayerState::RemoveWeapon(const uint8 HandIndex) {
 }
 
 void ACustomPlayerState::UpdateCombatStyle() {
-    // TODO update combat style according to the equipped weapons
+    returnIfNull(EquippedWeapons[RightHandIndex]);
+    const EWeaponType RightHandWeaponType = EquippedWeapons[RightHandIndex]->GetWeaponData().WeaponType;
+
+    EWeaponType LeftHandWeaponType = EWeaponType::None;
+    if (EquippedWeapons[LeftHandIndex] != nullptr) {
+        LeftHandWeaponType = EquippedWeapons[LeftHandIndex]->GetWeaponData().WeaponType;
+    }
+
+    if (RightHandWeaponType == EWeaponType::Sword && LeftHandWeaponType == EWeaponType::SpellFocus) {
+        CombatStyle = ECombatStyle::SwordAndSorcery;
+    } else if (RightHandWeaponType == EWeaponType::Sword && LeftHandWeaponType == EWeaponType::Sword) {
+        CombatStyle = ECombatStyle::DualWielding;
+    } else if (RightHandWeaponType == EWeaponType::Heavy) {
+        CombatStyle = ECombatStyle::TwoHanded;
+    } else if (RightHandWeaponType == EWeaponType::SpellFocus && LeftHandWeaponType == EWeaponType::SpellFocus) {
+        CombatStyle = ECombatStyle::Spellcasting;
+    } else if (RightHandWeaponType == EWeaponType::Bow) {
+        CombatStyle = ECombatStyle::Archery;
+    } else {
+        UE_LOG(LogTemp, Warning, TEXT("Invalid weapon combination selected."));
+    }
 }

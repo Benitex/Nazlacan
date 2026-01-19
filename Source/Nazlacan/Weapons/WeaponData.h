@@ -7,9 +7,10 @@
 UENUM(BlueprintType)
 enum class EWeaponType : uint8 {
     Sword,
-    Greatsword,
+    Heavy,
     Bow,
-    Spell,
+    SpellFocus,
+    None = 0,
 };
 
 USTRUCT(BlueprintType)
@@ -24,4 +25,7 @@ struct NAZLACAN_API FWeaponData : public FTableRowBase {
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     int32 BaseDamage;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    float AttackSpeedMultiplier = 1;
 };

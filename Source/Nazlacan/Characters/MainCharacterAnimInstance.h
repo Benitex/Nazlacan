@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "MainCharacter.h"
 #include "Animation/AnimInstance.h"
+#include "Nazlacan/Systems/CustomPlayerState.h"
+#include "Nazlacan/Weapons/CombatStyle.h"
 #include "MainCharacterAnimInstance.generated.h"
 
 UCLASS()
@@ -15,6 +17,9 @@ class NAZLACAN_API UMainCharacterAnimInstance : public UAnimInstance {
 	UPROPERTY(Transient)
 	UCharacterMovementComponent* AnimatedCharacterMovementComponent;
 
+	UPROPERTY(Transient)
+	ACustomPlayerState* AnimatedPlayerState;
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float Speed;
@@ -26,6 +31,9 @@ protected:
 	double Yaw;
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	double Pitch;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	ECombatStyle CombatStyle;
 
 public:
 	virtual void NativeInitializeAnimation() override;

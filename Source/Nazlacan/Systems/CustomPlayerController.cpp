@@ -1,16 +1,11 @@
 // ReSharper disable CppMemberFunctionMayBeConst
 #include "CustomPlayerController.h"
-#include "CustomPlayerState.h"
 #include "EnhancedInputComponent.h"
 #include "Nazlacan/Macros.h"
 
 void ACustomPlayerController::OnPossess(APawn* InPawn) {
     Super::OnPossess(InPawn);
     SetControlledCharacter(InPawn);
-
-    ACustomPlayerState* State = GetPlayerState<ACustomPlayerState>();
-    returnIfNull(State);
-    State->EquipDefaultWeapons();
 }
 
 void ACustomPlayerController::OnUnPossess() {

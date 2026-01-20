@@ -1,18 +1,14 @@
 #include "MainCharacter.h"
+#include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Nazlacan/Macros.h"
+#include "Nazlacan/Systems/CustomPlayerState.h"
 
 AMainCharacter::AMainCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
     SetupCamera();
-}
-
-void AMainCharacter::PostInitializeComponents() {
-	Super::PostInitializeComponents();
-	DefaultMaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
-	LoadSockets();
 }
 
 void AMainCharacter::SetupCamera() {
@@ -23,6 +19,12 @@ void AMainCharacter::SetupCamera() {
 	UCameraComponent* FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+}
+
+void AMainCharacter::PostInitializeComponents() {
+	Super::PostInitializeComponents();
+	DefaultMaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	LoadSockets();
 }
 
 void AMainCharacter::LoadSockets() {
@@ -36,6 +38,25 @@ void AMainCharacter::LoadSockets() {
 			return;
 		}
 	}
+}
+
+void AMainCharacter::PossessedBy(AController* NewController) {
+	Super::PossessedBy(NewController);
+
+	ACustomPlayerState* State = GetPlayerState<ACustomPlayerState>();
+	LoadAbilitySystemComponent(State);
+	State->EquipDefaultWeapons();
+}
+
+void AMainCharacter::OnRep_PlayerState() {
+	Super::OnRep_PlayerState();
+	ACustomPlayerState* State = GetPlayerState<ACustomPlayerState>();
+	LoadAbilitySystemComponent(State);
+}
+
+void AMainCharacter::LoadAbilitySystemComponent(ACustomPlayerState* FromState) {
+	AbilitySystemComponent = FromState->GetAbilitySystemComponent();
+	AbilitySystemComponent->InitAbilityActorInfo(FromState, this);
 }
 
 void AMainCharacter::StopJumping() {

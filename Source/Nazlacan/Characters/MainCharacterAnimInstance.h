@@ -12,13 +12,13 @@ class NAZLACAN_API UMainCharacterAnimInstance : public UAnimInstance {
 	GENERATED_BODY()
 
 	UPROPERTY(Transient)
-	AMainCharacter* AnimatedCharacter;
+	TObjectPtr<AMainCharacter> AnimatedCharacter;
 
 	UPROPERTY(Transient)
-	UCharacterMovementComponent* AnimatedCharacterMovementComponent;
+	TObjectPtr<UCharacterMovementComponent> AnimatedCharacterMovementComponent;
 
 	UPROPERTY(Transient)
-	ACustomPlayerState* AnimatedPlayerState;
+	TObjectPtr<ACustomPlayerState> AnimatedPlayerState;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")

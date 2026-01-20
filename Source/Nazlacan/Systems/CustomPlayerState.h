@@ -1,39 +1,34 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
+#include "Nazlacan/Characters/AttributeSets/CharacterAttributeSet.h"
+#include "Nazlacan/Characters/AttributeSets/PlayerCharacterAttributeSet.h"
 #include "Nazlacan/Weapons/CombatStyle.h"
 #include "Nazlacan/Weapons/Weapon.h"
 #include "CustomPlayerState.generated.h"
 
 UCLASS()
-class NAZLACAN_API ACustomPlayerState : public APlayerState {
+class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySystemInterface {
 	GENERATED_BODY()
 
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<const UCharacterAttributeSet> CharacterAttributeSet;
+	UPROPERTY()
+	TObjectPtr<const UPlayerCharacterAttributeSet> PlayerAttributeSet;
+
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat")
-	int32 MaxHealth;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")
-	int32 Health;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat")
-	int32 MaxEnergy;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")
-	int32 Energy;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat")
-    int32 StartingPotionCount;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")
-	int32 PotionCount;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	FDataTableRowHandle DefaultWeapons[2];
 
 	static constexpr uint8 RightHandIndex = 0;
 	static constexpr uint8 LeftHandIndex = 1;
+
+	int32 Experience = 0;
 
 protected:
 	UPROPERTY(VisibleInstanceOnly)
@@ -43,20 +38,27 @@ protected:
 	ECombatStyle CombatStyle = ECombatStyle::SwordAndSorcery;
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void EquipWeapon(FDataTableRowHandle& WeaponRowHandle, uint8 HandIndex);
+	ACustomPlayerState();
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void EquipWeapons(FDataTableRowHandle& RightHandWeapon, FDataTableRowHandle& LeftHandWeapon);
+	ECombatStyle GetCombatStyle() const { return CombatStyle; }
+
+	UFUNCTION(BLueprintCallable)
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {
+		return AbilitySystemComponent;
+	}
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void EquipWeapon(const FDataTableRowHandle& WeaponRowHandle, uint8 HandIndex);
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void EquipWeapons(const FDataTableRowHandle& RightHandWeapon, const FDataTableRowHandle& LeftHandWeapon);
 
 	UFUNCTION(BLueprintCallable, Category = "Combat")
 	void EquipDefaultWeapons();
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void RemoveWeapon(uint8 HandIndex);
-
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	ECombatStyle GetCombatStyle() const { return CombatStyle; }
 
 private:
 	void UpdateCombatStyle();

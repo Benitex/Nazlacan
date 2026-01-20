@@ -14,22 +14,22 @@ class NAZLACAN_API ACustomPlayerController : public APlayerController {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* InputMap;
+	TObjectPtr<UInputMappingContext> InputMap;
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookInput;
+	TObjectPtr<UInputAction> LookInput;
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* MoveInput;
+	TObjectPtr<UInputAction> MoveInput;
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpInput;
+	TObjectPtr<UInputAction> JumpInput;
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* SprintInput;
+	TObjectPtr<UInputAction> SprintInput;
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* DodgeInput;
+	TObjectPtr<UInputAction> DodgeInput;
 
 private:
 	TWeakObjectPtr<AMainCharacter> ControlledCharacter;

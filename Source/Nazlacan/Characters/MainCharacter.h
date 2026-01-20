@@ -2,10 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
+#include "Nazlacan/Systems/CustomPlayerState.h"
 #include "MainCharacter.generated.h"
 
 UCLASS()
-class NAZLACAN_API AMainCharacter : public ACharacter {
+class NAZLACAN_API AMainCharacter : public ACharacter, public IAbilitySystemInterface {
     GENERATED_BODY()
 
     // How much to reduce the upward velocity after stopping a jump
@@ -30,6 +32,8 @@ class NAZLACAN_API AMainCharacter : public ACharacter {
     FName LeftHandSocketName = TEXT("left_hand_socket");
 
 private:
+    TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
     FTransform RightHandSocket;
     FTransform LeftHandSocket;
 
@@ -39,11 +43,24 @@ public:
     AMainCharacter();
     virtual void PostInitializeComponents() override;
 
+    virtual void PossessedBy(AController* NewController) override;
+    virtual void OnRep_PlayerState() override;
+
     virtual void StopJumping() override;
+
+    UFUNCTION(BlueprintCallable, Category = "Character Movement: Sprinting")
     void StartSprinting() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Character Movement: Sprinting")
     void StopSprinting() const;
 
+    UFUNCTION(BlueprintCallable, Category = "Character Movement: Dodging")
     void StartDodging(FVector Direction = FVector::ZeroVector);
+
+    UFUNCTION(BlueprintCallable)
+    virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {
+        return AbilitySystemComponent.Get();
+    }
 
     FName GetRightHandSocketName() const { return RightHandSocketName; }
     FName GetLeftHandSocketName() const { return LeftHandSocketName; }
@@ -51,4 +68,5 @@ public:
 private:
     void SetupCamera();
     void LoadSockets();
+    void LoadAbilitySystemComponent(ACustomPlayerState* FromState);
 };

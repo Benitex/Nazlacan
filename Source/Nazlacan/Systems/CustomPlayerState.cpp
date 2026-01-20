@@ -1,10 +1,20 @@
 #include "CustomPlayerState.h"
+#include "AbilitySystemComponent.h"
 #include "Nazlacan/Macros.h"
 #include "Nazlacan/Characters/MainCharacter.h"
 #include "Nazlacan/Weapons/Weapon.h"
 #include "Nazlacan/Weapons/WeaponData.h"
 
-void ACustomPlayerState::EquipWeapon(FDataTableRowHandle& WeaponRowHandle, const uint8 HandIndex) {
+ACustomPlayerState::ACustomPlayerState() {
+    AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+    AbilitySystemComponent->SetIsReplicated(true);
+    AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+    CharacterAttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
+    PlayerAttributeSet = CreateDefaultSubobject<UPlayerCharacterAttributeSet>(TEXT("PlayerAttributeSet"));
+}
+
+void ACustomPlayerState::EquipWeapon(const FDataTableRowHandle& WeaponRowHandle, const uint8 HandIndex) {
     returnIfNull(WeaponRowHandle.DataTable);
     AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
     returnIfNull(MainCharacter);
@@ -29,7 +39,7 @@ void ACustomPlayerState::EquipWeapon(FDataTableRowHandle& WeaponRowHandle, const
     UpdateCombatStyle();
 }
 
-void ACustomPlayerState::EquipWeapons(FDataTableRowHandle& RightHandWeapon, FDataTableRowHandle& LeftHandWeapon) {
+void ACustomPlayerState::EquipWeapons(const FDataTableRowHandle& RightHandWeapon, const FDataTableRowHandle& LeftHandWeapon) {
     if (RightHandWeapon.DataTable != nullptr && RightHandWeapon.RowName != NAME_None) {
         EquipWeapon(RightHandWeapon, RightHandIndex);
     }

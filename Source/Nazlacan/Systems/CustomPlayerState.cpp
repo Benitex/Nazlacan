@@ -14,6 +14,22 @@ ACustomPlayerState::ACustomPlayerState() {
     PlayerAttributeSet = CreateDefaultSubobject<UPlayerCharacterAttributeSet>(TEXT("PlayerAttributeSet"));
 }
 
+void ACustomPlayerState::SetDefaultAbilitiesAndAttributes() {
+    if (GetLocalRole() != ROLE_Authority) return;
+
+    EquipWeapons(DefaultWeapons[RightHandIndex], DefaultWeapons[LeftHandIndex]);
+
+    FGameplayEffectContextHandle Context = AbilitySystemComponent->MakeEffectContext();
+    Context.AddSourceObject(this);
+    const FGameplayEffectSpecHandle Spec = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributeEffect, 1, Context);
+
+    AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+
+    for (const TSubclassOf<UGameplayAbility>& Ability : DefaultAbilities) {
+        AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability));
+    }
+}
+
 void ACustomPlayerState::EquipWeapon(const FDataTableRowHandle& WeaponRowHandle, const uint8 HandIndex) {
     returnIfNull(WeaponRowHandle.DataTable);
     AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
@@ -46,10 +62,6 @@ void ACustomPlayerState::EquipWeapons(const FDataTableRowHandle& RightHandWeapon
     if (LeftHandWeapon.DataTable != nullptr && LeftHandWeapon.RowName != NAME_None) {
         EquipWeapon(LeftHandWeapon, LeftHandIndex);
     }
-}
-
-void ACustomPlayerState::EquipDefaultWeapons() {
-    EquipWeapons(DefaultWeapons[RightHandIndex], DefaultWeapons[LeftHandIndex]);
 }
 
 void ACustomPlayerState::RemoveWeapon(const uint8 HandIndex) {

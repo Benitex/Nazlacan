@@ -55,7 +55,7 @@ public:
     void StopSprinting() const;
 
     UFUNCTION(BlueprintCallable, Category = "Character Movement: Dodging")
-    void StartDodging(FVector Direction = FVector::ZeroVector);
+    void StartDodging() const;
 
     UFUNCTION(BlueprintCallable)
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {

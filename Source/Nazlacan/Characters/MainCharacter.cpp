@@ -45,7 +45,7 @@ void AMainCharacter::PossessedBy(AController* NewController) {
 
 	ACustomPlayerState* State = GetPlayerState<ACustomPlayerState>();
 	LoadAbilitySystemComponent(State);
-	State->EquipDefaultWeapons();
+	State->SetDefaultAbilitiesAndAttributes();
 }
 
 void AMainCharacter::OnRep_PlayerState() {
@@ -77,13 +77,8 @@ void AMainCharacter::StopSprinting() const {
 	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
 }
 
-void AMainCharacter::StartDodging(FVector Direction) {
+void AMainCharacter::StartDodging() const {
 	if (GetCharacterMovement()->IsFalling()) return;
-
-	if (Direction.IsNearlyZero()) {
-		Direction = GetActorForwardVector();
-	}
-
-	LaunchCharacter(Direction * DodgeIntensity, true, false);
-	PlayAnimMontage(DodgeAnimationMontage);
+	const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Roll"));
+	AbilitySystemComponent->TryActivateAbilitiesByTag(FGameplayTagContainer(Tag));
 }

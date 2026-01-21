@@ -98,8 +98,6 @@ void ACustomPlayerController::OnSprintReleased() {
 
 void ACustomPlayerController::OnDodgePressed() {
     if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
-        FVector Direction = PlayerCharacter->GetLastMovementInputVector();
-        Direction.Normalize();
-        PlayerCharacter->StartDodging(Direction);
+        PlayerCharacter->StartDodging();
     }
 }

@@ -21,6 +21,12 @@ class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySyst
 	UPROPERTY()
 	TObjectPtr<const UPlayerCharacterAttributeSet> PlayerAttributeSet;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UGameplayEffect> DefaultAttributeEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
+	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
+
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	FDataTableRowHandle DefaultWeapons[2];
@@ -28,6 +34,7 @@ public:
 	static constexpr uint8 RightHandIndex = 0;
 	static constexpr uint8 LeftHandIndex = 1;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	int32 Experience = 0;
 
 protected:
@@ -39,6 +46,10 @@ protected:
 
 public:
 	ACustomPlayerState();
+
+	// Only callable on server
+	UFUNCTION(BlueprintCallable)
+	void SetDefaultAbilitiesAndAttributes();
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	ECombatStyle GetCombatStyle() const { return CombatStyle; }
@@ -53,9 +64,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void EquipWeapons(const FDataTableRowHandle& RightHandWeapon, const FDataTableRowHandle& LeftHandWeapon);
-
-	UFUNCTION(BLueprintCallable, Category = "Combat")
-	void EquipDefaultWeapons();
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void RemoveWeapon(uint8 HandIndex);

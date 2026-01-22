@@ -45,7 +45,7 @@ void AMainCharacter::PossessedBy(AController* NewController) {
 
 	ACustomPlayerState* State = GetPlayerState<ACustomPlayerState>();
 	LoadAbilitySystemComponent(State);
-	State->SetDefaultAbilitiesAndAttributes();
+	State->SetDefaultAbilitiesAndEffects();
 }
 
 void AMainCharacter::OnRep_PlayerState() {

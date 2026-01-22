@@ -21,8 +21,8 @@ class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySyst
 	UPROPERTY()
 	TObjectPtr<const UPlayerCharacterAttributeSet> PlayerAttributeSet;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UGameplayEffect> DefaultAttributeEffect;
+	UPROPERTY(EditAnywhere, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
+	TArray<TSubclassOf<UGameplayEffect>> DefaultEffects;
 
 	UPROPERTY(EditAnywhere, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
@@ -49,7 +49,7 @@ public:
 
 	// Only callable on server
 	UFUNCTION(BlueprintCallable)
-	void SetDefaultAbilitiesAndAttributes();
+	void SetDefaultAbilitiesAndEffects();
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	ECombatStyle GetCombatStyle() const { return CombatStyle; }

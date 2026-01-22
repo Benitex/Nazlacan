@@ -13,5 +13,8 @@ protected:
 	FVector GetDirection() const;
 
 	UFUNCTION(BlueprintCallable)
+	void LookAtRollDirection() const;
+
+	UFUNCTION(BlueprintCallable)
 	void LockRotation(bool bShouldLock = true) const;
 };

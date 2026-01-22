@@ -1,5 +1,4 @@
 #include "Roll.h"
-
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Nazlacan/Characters/MainCharacter.h"
 
@@ -18,6 +17,14 @@ FVector URoll::GetDirection() const {
     }
 
     return Direction;
+}
+
+void URoll::LookAtRollDirection() const {
+    AActor* Character = GetAvatarActorFromActorInfo();
+    FRotator Rotation = GetDirection().Rotation();
+    Rotation.Pitch = 0;
+    Rotation.Roll = 0;
+    Character->SetActorRotation(Rotation);
 }
 
 void URoll::LockRotation(const bool bShouldLock) const {

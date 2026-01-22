@@ -14,16 +14,18 @@ ACustomPlayerState::ACustomPlayerState() {
     PlayerAttributeSet = CreateDefaultSubobject<UPlayerCharacterAttributeSet>(TEXT("PlayerAttributeSet"));
 }
 
-void ACustomPlayerState::SetDefaultAbilitiesAndAttributes() {
+void ACustomPlayerState::SetDefaultAbilitiesAndEffects() {
     if (GetLocalRole() != ROLE_Authority) return;
 
     EquipWeapons(DefaultWeapons[RightHandIndex], DefaultWeapons[LeftHandIndex]);
 
     FGameplayEffectContextHandle Context = AbilitySystemComponent->MakeEffectContext();
     Context.AddSourceObject(this);
-    const FGameplayEffectSpecHandle Spec = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributeEffect, 1, Context);
 
-    AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+    for (const TSubclassOf<UGameplayEffect>& Effect : DefaultEffects) {
+        const FGameplayEffectSpecHandle Spec = AbilitySystemComponent->MakeOutgoingSpec(Effect, 1, Context);
+        AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+    }
 
     for (const TSubclassOf<UGameplayAbility>& Ability : DefaultAbilities) {
         AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability));

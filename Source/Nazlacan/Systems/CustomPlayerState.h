@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
+#include "Nazlacan/Abilities/AbilitiesAttributeSet.h"
 #include "Nazlacan/Characters/AttributeSets/CharacterAttributeSet.h"
 #include "Nazlacan/Characters/AttributeSets/PlayerCharacterAttributeSet.h"
 #include "Nazlacan/Weapons/CombatStyle.h"
@@ -16,10 +17,9 @@ class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySyst
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
-	UPROPERTY()
-	TObjectPtr<const UCharacterAttributeSet> CharacterAttributeSet;
-	UPROPERTY()
-	TObjectPtr<const UPlayerCharacterAttributeSet> PlayerAttributeSet;
+	UPROPERTY() TObjectPtr<const UCharacterAttributeSet> CharacterAttributeSet;
+	UPROPERTY() TObjectPtr<const UPlayerCharacterAttributeSet> PlayerAttributeSet;
+	UPROPERTY() TObjectPtr<const UAbilitiesAttributeSet> AbilityAttributeSet;
 
 	UPROPERTY(EditAnywhere, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
 	TArray<TSubclassOf<UGameplayEffect>> DefaultEffects;

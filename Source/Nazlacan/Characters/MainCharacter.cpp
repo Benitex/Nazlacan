@@ -70,15 +70,18 @@ void AMainCharacter::StopJumping() {
 
 void AMainCharacter::StartSprinting() const {
 	if (GetCharacterMovement()->IsFalling()) return;
-	GetCharacterMovement()->MaxWalkSpeed = MaxSprintingSpeed;
+	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Sprint"));
+	AbilitySystemComponent->TryActivateAbilitiesByTag(FGameplayTagContainer(Tag));
 }
 
 void AMainCharacter::StopSprinting() const {
-	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
+	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Sprint"));
+	static const FGameplayTagContainer Container(Tag);
+	AbilitySystemComponent->CancelAbilities(&Container);
 }
 
 void AMainCharacter::StartDodging() const {
 	if (GetCharacterMovement()->IsFalling()) return;
-	const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Roll"));
+	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Roll"));
 	AbilitySystemComponent->TryActivateAbilitiesByTag(FGameplayTagContainer(Tag));
 }

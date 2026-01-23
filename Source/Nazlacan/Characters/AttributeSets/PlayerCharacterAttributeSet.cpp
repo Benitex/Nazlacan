@@ -1,5 +1,6 @@
 #include "PlayerCharacterAttributeSet.h"
 #include "GameplayEffectExtension.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 void UPlayerCharacterAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) {
@@ -17,6 +18,17 @@ void UPlayerCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffe
 
     if (Data.EvaluatedData.Attribute == GetEnergyAttribute()) {
         SetEnergy(FMath::Clamp(GetEnergy(), 0, GetMaxEnergy()));
+
+        if (GetEnergy() <= 0) {
+            static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("Event.Energy.Empty"));
+            FGameplayEventData EventData;
+            EventData.EventTag = Tag;
+            EventData.Instigator = Data.EffectSpec.GetEffectContext().GetInstigator();
+            EventData.Target = Data.Target.GetAvatarActor();
+
+            UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Data.Target.GetAvatarActor(), Tag, EventData);
+        }
+
     } else if (Data.EvaluatedData.Attribute == GetMaxEnergyAttribute()) {
         if (Data.EvaluatedData.Magnitude > 0) {
             SetEnergy(GetMaxEnergy() + Data.EvaluatedData.Magnitude);

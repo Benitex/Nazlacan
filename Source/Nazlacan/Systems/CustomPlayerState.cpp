@@ -12,6 +12,7 @@ ACustomPlayerState::ACustomPlayerState() {
 
     CharacterAttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
     PlayerAttributeSet = CreateDefaultSubobject<UPlayerCharacterAttributeSet>(TEXT("PlayerAttributeSet"));
+    AbilityAttributeSet = CreateDefaultSubobject<UAbilitiesAttributeSet>(TEXT("AbilityAttributeSet"));
 }
 
 void ACustomPlayerState::SetDefaultAbilitiesAndEffects() {

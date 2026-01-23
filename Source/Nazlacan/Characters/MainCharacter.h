@@ -15,17 +15,6 @@ class NAZLACAN_API AMainCharacter : public ACharacter, public IAbilitySystemInte
     meta = (ClampMin = 0, ClampMax = 1, AllowPrivateAccess = "true"))
     float JumpBreakMultiplier = 0;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character Movement: Sprinting",
-    meta = (ClampMin = 0, ForceUnits = "cm/s", AllowPrivateAccess = "true"))
-    float MaxSprintingSpeed;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character Movement: Dodging",
-    meta = (ClampMin = 0, ForceUnits = "cm/s", AllowPrivateAccess = "true"))
-    float DodgeIntensity;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Character Movement: Dodging", meta = (AllowPrivateAccess = "true"))
-    UAnimMontage* DodgeAnimationMontage;
-
     UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
     FName RightHandSocketName = TEXT("right_hand_socket");
     UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
@@ -64,6 +53,7 @@ public:
 
     FName GetRightHandSocketName() const { return RightHandSocketName; }
     FName GetLeftHandSocketName() const { return LeftHandSocketName; }
+    float GetDefaultMaxWalkSpeed() const { return DefaultMaxWalkSpeed; }
 
 private:
     void SetupCamera();

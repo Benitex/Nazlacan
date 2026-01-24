@@ -49,6 +49,7 @@ void ACustomPlayerController::SetupInputComponent() {
     Input->BindAction(SprintInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnSprintPressed);
     Input->BindAction(SprintInput, ETriggerEvent::Completed, this, &ACustomPlayerController::OnSprintReleased);
 
+    Input->BindAction(Attack1Input, ETriggerEvent::Started, this, &ACustomPlayerController::OnAttack1Pressed);
     Input->BindAction(DodgeInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnDodgePressed);
 }
 
@@ -76,6 +77,14 @@ void ACustomPlayerController::OnMoveInput(const FInputActionValue& Value) {
     PlayerCharacter->AddMovementInput(RightDirection, MovementDirection.X);
 }
 
+void ACustomPlayerController::OnAttack1Pressed() {
+    AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
+    if (!PlayerCharacter) return;
+
+    if (PlayerCharacter->IsFalling()) {
+        PlayerCharacter->AirSlash();
+    } else {
+        PlayerCharacter->SharkSlash();
     }
 }
 

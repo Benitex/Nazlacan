@@ -59,6 +59,15 @@ void AMainCharacter::LoadAbilitySystemComponent(ACustomPlayerState* FromState) {
 	AbilitySystemComponent->InitAbilityActorInfo(FromState, this);
 }
 
+void AMainCharacter::SharkSlash() {
+	static const FGameplayTagContainer Tag = GetTagFrom(TEXT("Ability.Active.MeleeAttack.SharkSlash"));
+	AbilitySystemComponent->TryActivateAbilitiesByTag(Tag);
+}
+
+void AMainCharacter::AirSlash() {
+	// TODO
+}
+
 void AMainCharacter::StopJumping() {
 	Super::StopJumping();
 

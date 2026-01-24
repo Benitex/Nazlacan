@@ -69,19 +69,30 @@ void AMainCharacter::StopJumping() {
 }
 
 void AMainCharacter::StartSprinting() const {
-	if (GetCharacterMovement()->IsFalling()) return;
-	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Sprint"));
-	AbilitySystemComponent->TryActivateAbilitiesByTag(FGameplayTagContainer(Tag));
+	static const FGameplayTagContainer Tag = GetTagFrom(TEXT("Ability.Active.Sprint"));
+	AbilitySystemComponent->TryActivateAbilitiesByTag(Tag);
 }
 
 void AMainCharacter::StopSprinting() const {
-	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Sprint"));
-	static const FGameplayTagContainer Container(Tag);
-	AbilitySystemComponent->CancelAbilities(&Container);
+	static const FGameplayTagContainer Tag = GetTagFrom(TEXT("Ability.Active.Sprint"));
+	AbilitySystemComponent->CancelAbilities(&Tag);
 }
 
 void AMainCharacter::StartDodging() const {
-	if (GetCharacterMovement()->IsFalling()) return;
-	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Roll"));
-	AbilitySystemComponent->TryActivateAbilitiesByTag(FGameplayTagContainer(Tag));
+	static const FGameplayTagContainer Tag = GetTagFrom(TEXT("Ability.Active.Roll"));
+	AbilitySystemComponent->TryActivateAbilitiesByTag(Tag);
+}
+
+FGameplayTagContainer AMainCharacter::GetTagFrom(const FName TagName) const {
+	return FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TagName));
+}
+
+FVector AMainCharacter::GetIntendedDirection() const {
+	if (!CanMove()) return IntendedDirection;
+	return GetLastMovementInputVector();
+}
+
+bool AMainCharacter::CanMove() const {
+	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Status.MovementLocked"));
+	return !AbilitySystemComponent->HasMatchingGameplayTag(Tag);
 }

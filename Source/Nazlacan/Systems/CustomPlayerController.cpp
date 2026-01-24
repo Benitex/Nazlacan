@@ -20,7 +20,7 @@ void ACustomPlayerController::OnRep_Pawn() {
 }
 
 void ACustomPlayerController::SetControlledCharacter(APawn* InPawn) {
-    if (InPawn == nullptr) {
+    if (!InPawn) {
         ControlledCharacter = nullptr;
         return;
     }
@@ -62,20 +62,28 @@ void ACustomPlayerController::OnMoveInput(const FInputActionValue& Value) {
     const FVector2D MovementDirection = Value.Get<FVector2D>();
 
     AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
-    if (PlayerCharacter == nullptr) return;
+    if (!PlayerCharacter) return;
 
     const FRotator YawRotation(0, GetControlRotation().Yaw, 0);
     const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
     const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
+    const FVector IntendedDirection = ForwardDirection * MovementDirection.Y + RightDirection * MovementDirection.X;
+    PlayerCharacter->SetIntendedDirection(IntendedDirection.GetSafeNormal());
+    if (!PlayerCharacter->CanMove()) return;
+
     PlayerCharacter->AddMovementInput(ForwardDirection, MovementDirection.Y);
     PlayerCharacter->AddMovementInput(RightDirection, MovementDirection.X);
 }
 
-void ACustomPlayerController::OnJumpPressed() {
-    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
-        PlayerCharacter->Jump();
     }
+}
+
+void ACustomPlayerController::OnJumpPressed() {
+    AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
+    if (!PlayerCharacter || !PlayerCharacter->CanMove() || PlayerCharacter->IsFalling()) return;
+
+    PlayerCharacter->Jump();
 }
 
 void ACustomPlayerController::OnJumpReleased() {
@@ -85,19 +93,21 @@ void ACustomPlayerController::OnJumpReleased() {
 }
 
 void ACustomPlayerController::OnSprintPressed() {
-    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
-        PlayerCharacter->StartSprinting();
-    }
+    const AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
+    if (!PlayerCharacter || PlayerCharacter->IsFalling()) return;
+
+    PlayerCharacter->StartSprinting();
 }
 
 void ACustomPlayerController::OnSprintReleased() {
-    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
+    if (const AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
         PlayerCharacter->StopSprinting();
     }
 }
 
 void ACustomPlayerController::OnDodgePressed() {
-    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
-        PlayerCharacter->StartDodging();
-    }
+    const AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
+    if (!PlayerCharacter || PlayerCharacter->IsFalling()) return;
+
+    PlayerCharacter->StartDodging();
 }

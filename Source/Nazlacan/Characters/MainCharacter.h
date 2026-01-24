@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "Nazlacan/Systems/CustomPlayerState.h"
 #include "MainCharacter.generated.h"
 
@@ -23,10 +24,11 @@ class NAZLACAN_API AMainCharacter : public ACharacter, public IAbilitySystemInte
 private:
     TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
+    float DefaultMaxWalkSpeed;
+    FVector IntendedDirection;
+
     FTransform RightHandSocket;
     FTransform LeftHandSocket;
-
-    float DefaultMaxWalkSpeed;
 
 public:
     AMainCharacter();
@@ -34,6 +36,9 @@ public:
 
     virtual void PossessedBy(AController* NewController) override;
     virtual void OnRep_PlayerState() override;
+
+    virtual void SharkSlash();
+    virtual void AirSlash();
 
     virtual void StopJumping() override;
 
@@ -46,17 +51,25 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Character Movement: Dodging")
     void StartDodging() const;
 
+    bool IsFalling() const { return GetMovementComponent()->IsFalling(); }
+    bool CanMove() const;
+
     UFUNCTION(BlueprintCallable)
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {
         return AbilitySystemComponent.Get();
     }
 
+    UFUNCTION(BlueprintCallable)
+    FVector GetIntendedDirection() const;
+    void SetIntendedDirection(const FVector& NewDirection) { IntendedDirection = NewDirection; }
+
+    float GetDefaultMaxWalkSpeed() const { return DefaultMaxWalkSpeed; }
     FName GetRightHandSocketName() const { return RightHandSocketName; }
     FName GetLeftHandSocketName() const { return LeftHandSocketName; }
-    float GetDefaultMaxWalkSpeed() const { return DefaultMaxWalkSpeed; }
 
 private:
     void SetupCamera();
     void LoadSockets();
     void LoadAbilitySystemComponent(ACustomPlayerState* FromState);
+    FGameplayTagContainer GetTagFrom(FName TagName) const;
 };

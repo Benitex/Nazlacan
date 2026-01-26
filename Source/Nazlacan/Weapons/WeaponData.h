@@ -28,4 +28,7 @@ struct NAZLACAN_API FWeaponData : public FTableRowBase {
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float AttackSpeedMultiplier = 1;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    float CriticalMultiplier = 1;
 };

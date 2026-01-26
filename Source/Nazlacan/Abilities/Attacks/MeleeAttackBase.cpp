@@ -10,6 +10,11 @@ bool UMeleeAttackBase::ShouldMoveDuringAttack() const {
     return true;
 }
 
+bool UMeleeAttackBase::ShouldEndAttackEarly() const {
+    if (!MainCharacter.IsValid()) return false;
+    return MainCharacter->IsNextAttackPrepared();
+}
+
 void UMeleeAttackBase::TryToActivateNextAttack() {
     if (MainCharacter.IsValid()) MainCharacter->TryToActivateNextAttack();
 }

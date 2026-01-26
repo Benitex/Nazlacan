@@ -31,6 +31,9 @@ protected:
 	virtual bool ShouldMoveDuringAttack() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
+	virtual bool ShouldEndAttackEarly() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attack")
 	virtual void TryToActivateNextAttack();
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")

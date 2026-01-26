@@ -40,6 +40,21 @@ class NAZLACAN_API ACustomPlayerController : public APlayerController {
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> Attack3Input;
 
+	// Attacks that become available by pressing Attack 1 after performing a specific attack.
+	// Key: Previous Attack Tag, Value: Next Attack Tag
+	UPROPERTY(EditAnywhere, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	TMap<FGameplayTag, FGameplayTag> Attack1Combos;
+
+	// Attacks that become available by pressing Attack 2 after performing a specific attack.
+	// Key: Previous Attack Tag, Value: Next Attack Tag
+	UPROPERTY(EditAnywhere, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	TMap<FGameplayTag, FGameplayTag> Attack2Combos;
+
+	// Attacks that become available by pressing Attack 3 after performing a specific attack.
+	// Key: Previous Attack Tag, Value: Next Attack Tag
+	UPROPERTY(EditAnywhere, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	TMap<FGameplayTag, FGameplayTag> Attack3Combos;
+
 private:
 	TWeakObjectPtr<AMainCharacter> ControlledCharacter;
 

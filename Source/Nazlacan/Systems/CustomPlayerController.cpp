@@ -84,16 +84,9 @@ void ACustomPlayerController::OnAttack1Pressed() {
     if (PlayerCharacter->IsFalling()) {
         // TODO air slash
     } else {
-        if (PlayerCharacter->GetCombatStyle() == ECombatStyle::SwordAndSorcery) {
-            static const FGameplayTag SharkSlash = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.MeleeAttack.SharkSlash"));
-            static const FGameplayTag SideCut = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.MeleeAttack.SideCut"));
-
-            if (PlayerCharacter->GetLastAttack() == FGameplayTag::EmptyTag) {
-                PlayerCharacter->PrepareAttackWithTag(SharkSlash);
-            } else if (PlayerCharacter->GetLastAttack() == SharkSlash) {
-                PlayerCharacter->PrepareAttackWithTag(SideCut);
-            }
-        }
+        const FGameplayTag AttackTag = Attack1Combos[PlayerCharacter->GetLastAttack()];
+        if (!ensure(AttackTag != FGameplayTag::EmptyTag)) return;
+        PlayerCharacter->PrepareAttackWithTag(AttackTag);
     }
 }
 

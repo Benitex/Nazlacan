@@ -65,6 +65,7 @@ public:
     UFUNCTION(BlueprintCallable)
     void PrepareAttackWithTag(const FGameplayTag& Tag);
     void TryToActivateNextAttack();
+    bool IsNextAttackPrepared() const { return NextAttack != FGameplayTag::EmptyTag; }
 
     void RemoveLastAttack(FGameplayTagContainer TagFilter = FGameplayTagContainer());
     FGameplayTag GetLastAttack() const { return LastAttack; } 

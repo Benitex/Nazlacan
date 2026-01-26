@@ -34,3 +34,8 @@ void UBaseGameplayAbility::LookAtDirection(const FVector WorldDirection) const {
     AActor* Actor = GetAvatarActorFromActorInfo();
     Actor->SetActorRotation(Rotation);
 }
+
+float UBaseGameplayAbility::GetActorSpeed() const {
+    const AActor* Actor = GetAvatarActorFromActorInfo();
+    return Actor->GetVelocity().Size();
+}

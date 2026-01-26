@@ -67,6 +67,7 @@ protected:
 private:
 	void OnLookInput(const FInputActionValue& Value);
 	void OnMoveInput(const FInputActionValue& Value);
+	void OnMoveInputReleased();
 	void OnJumpPressed();
 	void OnJumpReleased();
 	void OnSprintPressed();

@@ -2,10 +2,10 @@
 #include "Nazlacan/Characters/MainCharacter.h"
 
 bool UMeleeAttackBase::ShouldMoveDuringAttack() const {
-    if (MovementTowardsTargetIntensity == 0) return false;
+    if (VelocityModifier == 0) return false;
 
     if (!MainCharacter.IsValid()) return false;
-    if (MainCharacter->GetLastMovementInputVector().IsNearlyZero()) return false;
+    if (MainCharacter->GetMovementIntendedDirection().IsNearlyZero()) return false;
 
     return true;
 }

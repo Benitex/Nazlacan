@@ -3,13 +3,21 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Nazlacan/Systems/CustomPlayerState.h"
 #include "MainCharacter.generated.h"
 
 UCLASS()
 class NAZLACAN_API AMainCharacter : public ACharacter, public IAbilitySystemInterface {
     GENERATED_BODY()
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<USpringArmComponent> CameraBoom;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UCameraComponent> FollowCamera;
 
     UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
     FName RightHandSocketName = TEXT("right_hand_socket");

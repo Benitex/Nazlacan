@@ -42,6 +42,7 @@ void ACustomPlayerController::SetupInputComponent() {
 
     Input->BindAction(LookInput, ETriggerEvent::Triggered, this, &ACustomPlayerController::OnLookInput);
     Input->BindAction(MoveInput, ETriggerEvent::Triggered, this, &ACustomPlayerController::OnMoveInput);
+    Input->BindAction(MoveInput, ETriggerEvent::Completed, this, &ACustomPlayerController::OnMoveInputReleased);
 
     Input->BindAction(JumpInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnJumpPressed);
     Input->BindAction(JumpInput, ETriggerEvent::Completed, this, &ACustomPlayerController::OnJumpReleased);
@@ -77,6 +78,12 @@ void ACustomPlayerController::OnMoveInput(const FInputActionValue& Value) {
     PlayerCharacter->AddMovementInput(RightDirection, MovementDirection.X);
 }
 
+void ACustomPlayerController::OnMoveInputReleased() {
+    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
+        PlayerCharacter->SetMovementIntendedDirection(FVector::ZeroVector);
+    }
+}
+
 void ACustomPlayerController::OnAttack1Pressed() {
     AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
     if (!PlayerCharacter) return;
@@ -84,8 +91,8 @@ void ACustomPlayerController::OnAttack1Pressed() {
     if (PlayerCharacter->IsFalling()) {
         // TODO air slash
     } else {
-        const FGameplayTag AttackTag = Attack1Combos[PlayerCharacter->GetLastAttack()];
-        if (!ensure(AttackTag != FGameplayTag::EmptyTag)) return;
+        const FGameplayTag AttackTag = Attack1Combos.FindRef(PlayerCharacter->GetLastAttack(), FGameplayTag::EmptyTag);
+        if (AttackTag == FGameplayTag::EmptyTag) return;
         PlayerCharacter->PrepareAttackWithTag(AttackTag);
     }
 }
@@ -106,6 +113,7 @@ void ACustomPlayerController::OnJumpReleased() {
 void ACustomPlayerController::OnSprintPressed() {
     const AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
     if (!PlayerCharacter || PlayerCharacter->IsFalling()) return;
+    if (PlayerCharacter->GetMovementIntendedDirection().IsNearlyZero()) return;
 
     PlayerCharacter->StartSprinting();
 }

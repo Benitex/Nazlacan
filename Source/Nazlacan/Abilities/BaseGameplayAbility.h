@@ -26,4 +26,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void LookAtDirection(FVector WorldDirection) const;
+	
+	UFUNCTION(BlueprintCallable)
+	virtual float GetActorSpeed() const;
 };

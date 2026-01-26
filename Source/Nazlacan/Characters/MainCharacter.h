@@ -11,21 +11,27 @@ UCLASS()
 class NAZLACAN_API AMainCharacter : public ACharacter, public IAbilitySystemInterface {
     GENERATED_BODY()
 
-    // How much to reduce the upward velocity after stopping a jump
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character Movement: Jumping / Falling",
-    meta = (ClampMin = 0, ClampMax = 1, AllowPrivateAccess = "true"))
-    float JumpBreakMultiplier = 0;
-
     UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
     FName RightHandSocketName = TEXT("right_hand_socket");
     UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
     FName LeftHandSocketName = TEXT("left_hand_socket");
 
-private:
-    TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+protected:
+    // How much to reduce the upward velocity after stopping a jump.
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character Movement: Jumping / Falling", meta = (ClampMin = 0, ClampMax = 1))
+    float JumpBreakMultiplier = 0;
 
+private:
+    TWeakObjectPtr<ACustomPlayerState> State;
+
+    UPROPERTY(VisibleInstanceOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+    FGameplayTag LastAttack = FGameplayTag::EmptyTag;
+    UPROPERTY(VisibleInstanceOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+    FGameplayTag NextAttack = FGameplayTag::EmptyTag;
+
+    UPROPERTY(VisibleInstanceOnly, Category = "Character Movement", meta = (AllowPrivateAccess = "true"))
+    FVector MovementIntendedDirection;
     float DefaultMaxWalkSpeed;
-    FVector IntendedDirection;
 
     FTransform RightHandSocket;
     FTransform LeftHandSocket;
@@ -37,9 +43,6 @@ public:
     virtual void PossessedBy(AController* NewController) override;
     virtual void OnRep_PlayerState() override;
 
-    virtual void SharkSlash();
-    virtual void AirSlash();
-
     virtual void StopJumping() override;
 
     UFUNCTION(BlueprintCallable, Category = "Character Movement: Sprinting")
@@ -48,20 +51,32 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Character Movement: Sprinting")
     void StopSprinting() const;
 
-    UFUNCTION(BlueprintCallable, Category = "Character Movement: Dodging")
-    void StartDodging() const;
-
-    bool IsFalling() const { return GetMovementComponent()->IsFalling(); }
-    bool CanMove() const;
-
     UFUNCTION(BlueprintCallable)
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {
-        return AbilitySystemComponent.Get();
+        return State->GetAbilitySystemComponent();
     }
 
+    UFUNCTION(BlueprintCallable, Category = "Combat")
+    ECombatStyle GetCombatStyle() const { return State->GetCombatStyle(); }
+
     UFUNCTION(BlueprintCallable)
-    FVector GetIntendedDirection() const;
-    void SetIntendedDirection(const FVector& NewDirection) { IntendedDirection = NewDirection; }
+    void ActivateAbilityWithTag(const FGameplayTag& Tag) const;
+
+    UFUNCTION(BlueprintCallable)
+    void PrepareAttackWithTag(const FGameplayTag& Tag);
+    void TryToActivateNextAttack();
+
+    void RemoveLastAttack(FGameplayTagContainer TagFilter = FGameplayTagContainer());
+    FGameplayTag GetLastAttack() const { return LastAttack; } 
+
+    UFUNCTION(BlueprintCallable) bool IsAttacking() const;
+    UFUNCTION(BlueprintCallable) bool CanMove() const;
+    UFUNCTION(BlueprintCallable, Category = "Character Movement")
+    bool IsFalling() const { return GetMovementComponent()->IsFalling(); }
+
+    UFUNCTION(BlueprintCallable, Category = "Character Movement")
+    FVector GetMovementIntendedDirection() const;
+    void SetMovementIntendedDirection(const FVector& NewDirection) { MovementIntendedDirection = NewDirection; }
 
     float GetDefaultMaxWalkSpeed() const { return DefaultMaxWalkSpeed; }
     FName GetRightHandSocketName() const { return RightHandSocketName; }
@@ -70,6 +85,4 @@ public:
 private:
     void SetupCamera();
     void LoadSockets();
-    void LoadAbilitySystemComponent(ACustomPlayerState* FromState);
-    FGameplayTagContainer GetTagFrom(FName TagName) const;
 };

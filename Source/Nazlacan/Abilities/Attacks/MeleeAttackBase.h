@@ -9,15 +9,30 @@ class NAZLACAN_API UMeleeAttackBase : public UBaseGameplayAbility {
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	UAnimMontage* AttackMontage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ClampMin = "0.0", ClampMax = "2.0"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack", Meta = (ClampMin = "0.0", ClampMax = "3.0"))
 	float MotionValue = 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ClampMin = "0.0"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack", Meta = (ClampMin = "0.0"))
 	float MovementTowardsTargetIntensity = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack", Meta = (ClampMin = "0.0", ClampMax = "3.0"))
 	float AnimationBaseSpeed = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	bool UsesRightHandWeapon = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	bool UsesLeftHandWeapon = false;
+
+protected:
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+	virtual bool ShouldMoveDuringAttack() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+	virtual void TryToActivateNextAttack();
+
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+	virtual void RemoveLastAttackTag() const;
 };

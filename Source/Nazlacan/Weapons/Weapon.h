@@ -10,11 +10,14 @@ class NAZLACAN_API AWeapon : public AActor {
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	FWeaponData WeaponDataTable;
 
-	UPROPERTY(BlueprintReadWrite)
-	UStaticMeshComponent* WeaponMesh;
+	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
+	TObjectPtr<UStaticMeshComponent> WeaponMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float CorruptionIntensity = 0;
 
 public:
 	UFUNCTION(BlueprintCallable)

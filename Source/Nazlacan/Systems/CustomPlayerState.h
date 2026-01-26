@@ -27,6 +27,9 @@ class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySyst
 	UPROPERTY(EditAnywhere, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
 
+	UPROPERTY(EditAnywhere, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
+	TArray<TSubclassOf<UGameplayAbility>> Attacks;
+
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	FDataTableRowHandle DefaultWeapons[2];

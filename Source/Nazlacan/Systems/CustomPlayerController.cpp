@@ -70,7 +70,7 @@ void ACustomPlayerController::OnMoveInput(const FInputActionValue& Value) {
     const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
     const FVector IntendedDirection = ForwardDirection * MovementDirection.Y + RightDirection * MovementDirection.X;
-    PlayerCharacter->SetIntendedDirection(IntendedDirection.GetSafeNormal());
+    PlayerCharacter->SetMovementIntendedDirection(IntendedDirection.GetSafeNormal());
     if (!PlayerCharacter->CanMove()) return;
 
     PlayerCharacter->AddMovementInput(ForwardDirection, MovementDirection.Y);
@@ -82,9 +82,18 @@ void ACustomPlayerController::OnAttack1Pressed() {
     if (!PlayerCharacter) return;
 
     if (PlayerCharacter->IsFalling()) {
-        PlayerCharacter->AirSlash();
+        // TODO air slash
     } else {
-        PlayerCharacter->SharkSlash();
+        if (PlayerCharacter->GetCombatStyle() == ECombatStyle::SwordAndSorcery) {
+            static const FGameplayTag SharkSlash = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.MeleeAttack.SharkSlash"));
+            static const FGameplayTag SideCut = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.MeleeAttack.SideCut"));
+
+            if (PlayerCharacter->GetLastAttack() == FGameplayTag::EmptyTag) {
+                PlayerCharacter->PrepareAttackWithTag(SharkSlash);
+            } else if (PlayerCharacter->GetLastAttack() == SharkSlash) {
+                PlayerCharacter->PrepareAttackWithTag(SideCut);
+            }
+        }
     }
 }
 
@@ -118,5 +127,6 @@ void ACustomPlayerController::OnDodgePressed() {
     const AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
     if (!PlayerCharacter || PlayerCharacter->IsFalling()) return;
 
-    PlayerCharacter->StartDodging();
+	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Roll"));
+    PlayerCharacter->ActivateAbilityWithTag(Tag);
 }

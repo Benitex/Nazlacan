@@ -31,6 +31,9 @@ void ACustomPlayerState::SetDefaultAbilitiesAndEffects() {
     for (const TSubclassOf<UGameplayAbility>& Ability : DefaultAbilities) {
         AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability));
     }
+    for (const TSubclassOf<UGameplayAbility>& Attack : Attacks) {
+        AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Attack));
+    }
 }
 
 void ACustomPlayerState::EquipWeapon(const FDataTableRowHandle& WeaponRowHandle, const uint8 HandIndex) {

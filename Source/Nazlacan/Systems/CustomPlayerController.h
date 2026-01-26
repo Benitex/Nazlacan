@@ -34,6 +34,12 @@ class NAZLACAN_API ACustomPlayerController : public APlayerController {
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> Attack1Input;
 
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> Attack2Input;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> Attack3Input;
+
 private:
 	TWeakObjectPtr<AMainCharacter> ControlledCharacter;
 

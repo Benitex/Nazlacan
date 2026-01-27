@@ -7,13 +7,29 @@ void UMeleeAttackBase::TryToActivateNextAttack() {
 
 void UMeleeAttackBase::StartHitDetection() const {
     if (!MainCharacter.IsValid()) return;
+    if (!ensure(UsesRightHandWeapon || UsesLeftHandWeapon)) return;
 
     if (UsesRightHandWeapon) {
-        MainCharacter->GetEquippedWeapon(ACustomPlayerState::RightHandIndex)->StartCollisionDetection(MainCharacter.Get());
+        const FGameplayEffectSpecHandle SpecHandle = GetEffectSpecHandle(ACustomPlayerState::RightHandIndex);
+        MainCharacter->GetEquippedWeapon(ACustomPlayerState::RightHandIndex)->StartCollisionDetection(MainCharacter.Get(), SpecHandle);
     }
     if (UsesLeftHandWeapon) {
-        MainCharacter->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex)->StartCollisionDetection(MainCharacter.Get());
+        const FGameplayEffectSpecHandle SpecHandle = GetEffectSpecHandle(ACustomPlayerState::LeftHandIndex);
+        MainCharacter->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex)->StartCollisionDetection(MainCharacter.Get(), SpecHandle);
     }
+}
+
+FGameplayEffectSpecHandle UMeleeAttackBase::GetEffectSpecHandle(const uint8 ForHand) const {
+    ensure(MainCharacter.IsValid());
+
+    float WeaponDamage = MainCharacter->GetEquippedWeapon(ForHand)->GetWeaponData().BaseDamage;
+    WeaponDamage *= MotionValue;
+
+    static const FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Data.Damage"));
+    const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(EffectToApplyOnHit, GetAbilityLevel());
+    SpecHandle.Data.Get()->SetSetByCallerMagnitude(DamageTag, WeaponDamage);
+
+    return SpecHandle;
 }
 
 void UMeleeAttackBase::StopHitDetection() const {

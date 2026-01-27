@@ -12,6 +12,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	UAnimMontage* AttackMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	TSubclassOf<UGameplayEffect> EffectToApplyOnHit;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack", Meta = (ClampMin = "0.0", ClampMax = "3.0"))
 	float MotionValue = 1;
 
@@ -44,4 +47,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	virtual void RemoveLastAttackTag() const;
+
+private:
+	FGameplayEffectSpecHandle GetEffectSpecHandle(const uint8 ForHand) const;
 };

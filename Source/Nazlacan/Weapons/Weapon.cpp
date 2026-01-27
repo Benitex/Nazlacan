@@ -1,4 +1,7 @@
 #include "Weapon.h"
+
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemInterface.h"
 #include "Nazlacan/Macros.h"
 
 AWeapon* AWeapon::Spawn(const FWeaponData& WeaponData, const FTransform& SpawnPosition, APawn* NewOwner) {
@@ -58,17 +61,17 @@ void AWeapon::BeginPlay() {
 
 	FVector BoxExtent = (Max - Min) / 2;
 	BoxExtent.Z += CollisionBoxZPadding;
+	CollisionBox->SetBoxExtent(BoxExtent);
 
 	FVector BoxCenter = (Min + Max) / 2;
-	BoxCenter.Z += CollisionBoxZPadding / 2;
-
-	CollisionBox->SetBoxExtent(BoxExtent);
+	BoxCenter.Z += CollisionBoxZPadding;
 	CollisionBox->SetRelativeLocation(BoxCenter);
 }
 
-void AWeapon::StartCollisionDetection(AActor* Attacker) {
+void AWeapon::StartCollisionDetection(AActor* Attacker, const FGameplayEffectSpecHandle& EffectToApplyOnHit) {
 	IgnoredActors = {Attacker};
 	HitActors.Empty();
+	EffectToApply = EffectToApplyOnHit;
 	CollisionBox->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 }
 
@@ -84,6 +87,11 @@ void AWeapon::OnOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult
 ) {
-	if (IgnoredActors.Contains(OtherActor)) return;
+	if (!OtherActor || IgnoredActors.Contains(OtherActor)) return;
+	const IAbilitySystemInterface* Target = Cast<IAbilitySystemInterface>(OtherActor);
+	if (!Target) return;
 	HitActors.Add(OtherActor);
+	if (!EffectToApply.IsValid()) return;
+
+	Target->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*EffectToApply.Data.Get());
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffect.h"
 #include "WeaponData.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
@@ -26,6 +27,7 @@ protected:
 private:
 	TSet<TWeakObjectPtr<AActor>> IgnoredActors = {};
 	TSet<TWeakObjectPtr<AActor>> HitActors = {};
+	FGameplayEffectSpecHandle EffectToApply;
 
 	static constexpr float CollisionBoxZPadding = 10;
 
@@ -38,7 +40,7 @@ public:
 
 	FWeaponData GetWeaponData() const { return WeaponDataTable; }
 
-	void StartCollisionDetection(AActor* Attacker);
+	void StartCollisionDetection(AActor* Attacker, const FGameplayEffectSpecHandle& EffectToApplyOnHit);
 	void StopCollisionDetection() const;
 	TSet<TWeakObjectPtr<AActor>> GetHitActors() const { return HitActors; }
 

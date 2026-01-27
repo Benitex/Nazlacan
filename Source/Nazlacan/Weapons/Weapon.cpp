@@ -35,6 +35,12 @@ AWeapon::AWeapon() {
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = WeaponMesh;
 	WeaponMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	WeaponMesh->UpdateBounds();
+
+	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
+	CollisionBox->SetupAttachment(RootComponent);
+	CollisionBox->SetCollisionProfileName(TEXT("NoCollision"));
+	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnOverlap);
 
 	bReplicates = true;
 }
@@ -46,4 +52,38 @@ void AWeapon::BeginPlay() {
 		return;
 	}
 	WeaponMesh->SetStaticMesh(WeaponDataTable.WeaponMesh);
+
+	FVector Min, Max;
+	WeaponMesh->GetLocalBounds(Min, Max);
+
+	FVector BoxExtent = (Max - Min) / 2;
+	BoxExtent.Z += CollisionBoxZPadding;
+
+	FVector BoxCenter = (Min + Max) / 2;
+	BoxCenter.Z += CollisionBoxZPadding / 2;
+
+	CollisionBox->SetBoxExtent(BoxExtent);
+	CollisionBox->SetRelativeLocation(BoxCenter);
+}
+
+void AWeapon::StartCollisionDetection(AActor* Attacker) {
+	IgnoredActors = {Attacker};
+	HitActors.Empty();
+	CollisionBox->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+}
+
+void AWeapon::StopCollisionDetection() const {
+	CollisionBox->SetCollisionProfileName(TEXT("NoCollision"));
+}
+
+void AWeapon::OnOverlap(
+	UPrimitiveComponent* OverlappedComp,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult
+) {
+	if (IgnoredActors.Contains(OtherActor)) return;
+	HitActors.Add(OtherActor);
 }

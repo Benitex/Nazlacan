@@ -71,6 +71,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void RemoveWeapon(uint8 HandIndex);
 
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	AWeapon* GetEquippedWeapon(const uint8 HandIndex) const { return EquippedWeapons[HandIndex]; }
+
 private:
 	void UpdateCombatStyle();
 };

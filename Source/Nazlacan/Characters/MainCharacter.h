@@ -87,6 +87,8 @@ public:
     FVector GetMovementIntendedDirection() const;
     void SetMovementIntendedDirection(const FVector& NewDirection) { MovementIntendedDirection = NewDirection; }
 
+    AWeapon* GetEquippedWeapon(const uint8 HandIndex) const { return State->GetEquippedWeapon(HandIndex); }
+
     float GetDefaultMaxWalkSpeed() const { return DefaultMaxWalkSpeed; }
     FName GetRightHandSocketName() const { return RightHandSocketName; }
     FName GetLeftHandSocketName() const { return LeftHandSocketName; }

@@ -19,6 +19,11 @@ class NAZLACAN_API AMainCharacter : public ACharacter, public IAbilitySystemInte
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UCameraComponent> FollowCamera;
 
+    UPROPERTY(EditDefaultsOnly)
+    TMap<ECombatStyle, UAnimMontage*> HitReactMontages;
+    UPROPERTY(EditDefaultsOnly)
+    TMap<ECombatStyle, UAnimMontage*> DeathMontages;
+    
     UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
     FName RightHandSocketName = TEXT("right_hand_socket");
     UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
@@ -51,6 +56,9 @@ public:
     virtual void PossessedBy(AController* NewController) override;
     virtual void OnRep_PlayerState() override;
 
+    UFUNCTION(BlueprintCallable)
+    virtual ACustomPlayerState* GetState() const { return State.Get(); }
+
     virtual void StopJumping() override;
 
     UFUNCTION(BlueprintCallable, Category = "Character Movement: Sprinting")
@@ -63,9 +71,6 @@ public:
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {
         return State->GetAbilitySystemComponent();
     }
-
-    UFUNCTION(BlueprintCallable, Category = "Combat")
-    ECombatStyle GetCombatStyle() const { return State->GetCombatStyle(); }
 
     UFUNCTION(BlueprintCallable)
     void ActivateAbilityWithTag(const FGameplayTag& Tag) const;
@@ -87,9 +92,10 @@ public:
     FVector GetMovementIntendedDirection() const;
     void SetMovementIntendedDirection(const FVector& NewDirection) { MovementIntendedDirection = NewDirection; }
 
-    AWeapon* GetEquippedWeapon(const uint8 HandIndex) const { return State->GetEquippedWeapon(HandIndex); }
-
     float GetDefaultMaxWalkSpeed() const { return DefaultMaxWalkSpeed; }
+
+    UAnimMontage* GetHitReactMontage() const;
+    UAnimMontage* GetDeathMontage() const { return DeathMontages[State->GetCombatStyle()]; }
     FName GetRightHandSocketName() const { return RightHandSocketName; }
     FName GetLeftHandSocketName() const { return LeftHandSocketName; }
 

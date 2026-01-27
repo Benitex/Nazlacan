@@ -1,5 +1,6 @@
 #include "CharacterAttributeSet.h"
 #include "GameplayEffectExtension.h"
+#include "Nazlacan/Characters/MainCharacter.h"
 #include "Net/UnrealNetwork.h"
 
 void UCharacterAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) {
@@ -14,7 +15,16 @@ void UCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
     Super::PostGameplayEffectExecute(Data);
 
     if (Data.EvaluatedData.Attribute == GetHealthAttribute()) {
-        SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));        
+        SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));
+
+        if (Health.GetCurrentValue() <= 0) {
+            static const FGameplayTagContainer Tag = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Reaction.Death")));
+            GetOwningAbilitySystemComponent()->TryActivateAbilitiesByTag(Tag);
+
+        } else if (Data.EvaluatedData.Magnitude < 0) {
+            static const FGameplayTagContainer Tag = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Reaction.BeingHit")));
+            GetOwningAbilitySystemComponent()->TryActivateAbilitiesByTag(Tag);
+        }
     } else if (Data.EvaluatedData.Attribute == GetMaxHealthAttribute()) {
         if (Data.EvaluatedData.Magnitude > 0) {
             SetHealth(GetHealth() + Data.EvaluatedData.Magnitude);

@@ -79,7 +79,7 @@ void ACustomPlayerController::OnMoveInput(const FInputActionValue& Value) {
 }
 
 void ACustomPlayerController::OnMoveInputReleased() {
-    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
+    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get()) {
         PlayerCharacter->SetMovementIntendedDirection(FVector::ZeroVector);
     }
 }
@@ -105,7 +105,7 @@ void ACustomPlayerController::OnJumpPressed() {
 }
 
 void ACustomPlayerController::OnJumpReleased() {
-    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
+    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get()) {
         PlayerCharacter->StopJumping();
     }
 }
@@ -119,7 +119,7 @@ void ACustomPlayerController::OnSprintPressed() {
 }
 
 void ACustomPlayerController::OnSprintReleased() {
-    if (const AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); PlayerCharacter != nullptr) {
+    if (const AMainCharacter* PlayerCharacter = ControlledCharacter.Get()) {
         PlayerCharacter->StopSprinting();
     }
 }
@@ -128,6 +128,6 @@ void ACustomPlayerController::OnDodgePressed() {
     const AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
     if (!PlayerCharacter || PlayerCharacter->IsFalling()) return;
 
-	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Roll"));
+	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("Ability.Active.Roll"));
     PlayerCharacter->ActivateAbilityWithTag(Tag);
 }

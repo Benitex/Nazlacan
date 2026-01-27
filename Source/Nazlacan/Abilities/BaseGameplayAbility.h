@@ -14,7 +14,7 @@ protected:
 
 public:
 	UBaseGameplayAbility();
-	
+
 protected:
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 

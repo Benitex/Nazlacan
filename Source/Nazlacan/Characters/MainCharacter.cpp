@@ -79,12 +79,12 @@ void AMainCharacter::RemoveLastAttack(const FGameplayTagContainer TagFilter) {
 }
 
 void AMainCharacter::StartSprinting() const {
-	static const FGameplayTagContainer Tag = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Sprint")));
+	static const FGameplayTagContainer Tag = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Active.Sprint")));
 	GetAbilitySystemComponent()->TryActivateAbilitiesByTag(Tag);
 }
 
 void AMainCharacter::StopSprinting() const {
-	static const FGameplayTagContainer Tag = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Active.Sprint")));
+	static const FGameplayTagContainer Tag = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Active.Sprint")));
 	GetAbilitySystemComponent()->CancelAbilities(&Tag);
 }
 
@@ -102,12 +102,16 @@ FVector AMainCharacter::GetMovementIntendedDirection() const {
 	return GetLastMovementInputVector();
 }
 
+UAnimMontage* AMainCharacter::GetHitReactMontage() const {
+	return HitReactMontages[State->GetCombatStyle()];
+}
+
 bool AMainCharacter::CanMove() const {
-	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("Status.MovementLocked"));
+	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("Status.MovementLocked"));
 	return !GetAbilitySystemComponent()->HasMatchingGameplayTag(Tag);
 }
 
 bool AMainCharacter::IsAttacking() const {
-	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(TEXT("State.Attacking"));
+	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("State.Attacking"));
 	return GetAbilitySystemComponent()->HasMatchingGameplayTag(Tag);
 }

@@ -101,11 +101,11 @@ void ACustomPlayerState::UpdateCombatStyle() {
     }
 
     static const TMap<ECombatStyle, FGameplayTag> CombatStyleTags = {
-        {ECombatStyle::SwordAndSorcery, FGameplayTag::RequestGameplayTag(TEXT("CombatStyle.Sword.SwordAndSorcery"))},
-        {ECombatStyle::DualWielding, FGameplayTag::RequestGameplayTag(TEXT("CombatStyle.Sword.DualWielding"))},
-        {ECombatStyle::TwoHanded, FGameplayTag::RequestGameplayTag(TEXT("CombatStyle.TwoHanded"))},
-        {ECombatStyle::Spellcasting, FGameplayTag::RequestGameplayTag(TEXT("CombatStyle.Spellcasting"))},
-        {ECombatStyle::Archery, FGameplayTag::RequestGameplayTag(TEXT("CombatStyle.Archery"))}
+        {ECombatStyle::SwordAndSorcery, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Sword.SwordAndSorcery"))},
+        {ECombatStyle::DualWielding, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Sword.DualWielding"))},
+        {ECombatStyle::TwoHanded, FGameplayTag::RequestGameplayTag(FName("CombatStyle.TwoHanded"))},
+        {ECombatStyle::Spellcasting, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Spellcasting"))},
+        {ECombatStyle::Archery, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Archery"))}
     };
     static TArray<FGameplayTag> CombatStyles = {};
     if (CombatStyles.Num() == 0) CombatStyleTags.GenerateValueArray(CombatStyles);

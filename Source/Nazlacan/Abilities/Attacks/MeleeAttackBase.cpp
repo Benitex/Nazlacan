@@ -11,23 +11,25 @@ void UMeleeAttackBase::StartHitDetection() const {
 
     if (UsesRightHandWeapon) {
         const FGameplayEffectSpecHandle SpecHandle = GetEffectSpecHandle(ACustomPlayerState::RightHandIndex);
-        MainCharacter->GetEquippedWeapon(ACustomPlayerState::RightHandIndex)->StartCollisionDetection(MainCharacter.Get(), SpecHandle);
+        AWeapon* Weapon = MainCharacter->GetState()->GetEquippedWeapon(ACustomPlayerState::RightHandIndex);
+        Weapon->StartCollisionDetection(MainCharacter.Get(), SpecHandle);
     }
     if (UsesLeftHandWeapon) {
         const FGameplayEffectSpecHandle SpecHandle = GetEffectSpecHandle(ACustomPlayerState::LeftHandIndex);
-        MainCharacter->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex)->StartCollisionDetection(MainCharacter.Get(), SpecHandle);
+        AWeapon* Weapon = MainCharacter->GetState()->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex);
+        Weapon->StartCollisionDetection(MainCharacter.Get(), SpecHandle);
     }
 }
 
 FGameplayEffectSpecHandle UMeleeAttackBase::GetEffectSpecHandle(const uint8 ForHand) const {
     ensure(MainCharacter.IsValid());
 
-    float WeaponDamage = MainCharacter->GetEquippedWeapon(ForHand)->GetWeaponData().BaseDamage;
+    float WeaponDamage = MainCharacter->GetState()->GetEquippedWeapon(ForHand)->GetWeaponData().BaseDamage;
     WeaponDamage *= MotionValue;
 
     static const FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Data.Damage"));
     const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(EffectToApplyOnHit, GetAbilityLevel());
-    SpecHandle.Data.Get()->SetSetByCallerMagnitude(DamageTag, WeaponDamage);
+    SpecHandle.Data.Get()->SetSetByCallerMagnitude(DamageTag, -WeaponDamage);
 
     return SpecHandle;
 }
@@ -36,10 +38,12 @@ void UMeleeAttackBase::StopHitDetection() const {
     if (!MainCharacter.IsValid()) return;
 
     if (UsesRightHandWeapon) {
-        MainCharacter->GetEquippedWeapon(ACustomPlayerState::RightHandIndex)->StopCollisionDetection();
+        const AWeapon* Weapon = MainCharacter->GetState()->GetEquippedWeapon(ACustomPlayerState::RightHandIndex);
+        Weapon->StopCollisionDetection();
     }
     if (UsesLeftHandWeapon) {
-        MainCharacter->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex)->StopCollisionDetection();
+        const AWeapon* Weapon = MainCharacter->GetState()->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex);
+        Weapon->StopCollisionDetection();
     }
 }
 

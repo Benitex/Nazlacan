@@ -13,6 +13,9 @@ ACustomPlayerState::ACustomPlayerState() {
     CharacterAttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
     PlayerAttributeSet = CreateDefaultSubobject<UPlayerCharacterAttributeSet>(TEXT("PlayerAttributeSet"));
     AbilityAttributeSet = CreateDefaultSubobject<UAbilitiesAttributeSet>(TEXT("AbilityAttributeSet"));
+
+    EquippedWeapons[RightHandIndex] = nullptr;
+    EquippedWeapons[LeftHandIndex] = nullptr;
 }
 
 void ACustomPlayerState::SetDefaultAbilitiesAndEffects() {
@@ -57,17 +60,22 @@ void ACustomPlayerState::EquipWeapon(const FDataTableRowHandle& WeaponRowHandle,
 
     SpawnedWeapon->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetIncludingScale, SocketName);
     EquippedWeapons[HandIndex] = SpawnedWeapon;
-
-    UpdateCombatStyle();
 }
 
 void ACustomPlayerState::EquipWeapons(const FDataTableRowHandle& RightHandWeapon, const FDataTableRowHandle& LeftHandWeapon) {
     if (RightHandWeapon.DataTable != nullptr && RightHandWeapon.RowName != NAME_None) {
         EquipWeapon(RightHandWeapon, RightHandIndex);
+    } else {
+        RemoveWeapon(RightHandIndex);
     }
+
     if (LeftHandWeapon.DataTable != nullptr && LeftHandWeapon.RowName != NAME_None) {
         EquipWeapon(LeftHandWeapon, LeftHandIndex);
+    } else {
+        RemoveWeapon(LeftHandIndex);
     }
+
+    UpdateCombatStyle();
 }
 
 void ACustomPlayerState::RemoveWeapon(const uint8 HandIndex) {
@@ -82,7 +90,7 @@ void ACustomPlayerState::UpdateCombatStyle() {
     const EWeaponType RightHandWeaponType = EquippedWeapons[RightHandIndex]->GetWeaponData().WeaponType;
 
     EWeaponType LeftHandWeaponType = EWeaponType::None;
-    if (EquippedWeapons[LeftHandIndex] != nullptr) {
+    if (IsValid(EquippedWeapons[LeftHandIndex])) {
         LeftHandWeaponType = EquippedWeapons[LeftHandIndex]->GetWeaponData().WeaponType;
     }
 
@@ -90,6 +98,8 @@ void ACustomPlayerState::UpdateCombatStyle() {
         CombatStyle = ECombatStyle::SwordAndSorcery;
     } else if (RightHandWeaponType == EWeaponType::Sword && LeftHandWeaponType == EWeaponType::Sword) {
         CombatStyle = ECombatStyle::DualWielding;
+    } else if (RightHandWeaponType == EWeaponType::Sword && LeftHandWeaponType == EWeaponType::None) {
+        CombatStyle = ECombatStyle::SingleSword;
     } else if (RightHandWeaponType == EWeaponType::Heavy) {
         CombatStyle = ECombatStyle::TwoHanded;
     } else if (RightHandWeaponType == EWeaponType::SpellFocus && LeftHandWeaponType == EWeaponType::SpellFocus) {
@@ -102,6 +112,7 @@ void ACustomPlayerState::UpdateCombatStyle() {
 
     static const TMap<ECombatStyle, FGameplayTag> CombatStyleTags = {
         {ECombatStyle::SwordAndSorcery, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Sword.SwordAndSorcery"))},
+        {ECombatStyle::SingleSword, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Sword.SingleSword"))},
         {ECombatStyle::DualWielding, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Sword.DualWielding"))},
         {ECombatStyle::TwoHanded, FGameplayTag::RequestGameplayTag(FName("CombatStyle.TwoHanded"))},
         {ECombatStyle::Spellcasting, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Spellcasting"))},

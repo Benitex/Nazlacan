@@ -66,9 +66,6 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void EquipWeapon(const FDataTableRowHandle& WeaponRowHandle, uint8 HandIndex);
-
-	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void EquipWeapons(const FDataTableRowHandle& RightHandWeapon, const FDataTableRowHandle& LeftHandWeapon);
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
@@ -78,6 +75,10 @@ public:
 	AWeapon* GetEquippedWeapon(const uint8 HandIndex) const { return EquippedWeapons[HandIndex]; }
 
 	TSubclassOf<UGameplayEffect> GetExperienceGrantEffect() const { return ExperienceGrantEffect; }
+
+protected:
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void EquipWeapon(const FDataTableRowHandle& WeaponRowHandle, uint8 HandIndex);
 
 private:
 	void UpdateCombatStyle();

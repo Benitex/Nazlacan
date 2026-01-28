@@ -6,11 +6,11 @@
 
 UENUM(BlueprintType)
 enum class EWeaponType : uint8 {
+    None = 0,
     Sword,
     Heavy,
     Bow,
     SpellFocus,
-    None = 0,
 };
 
 USTRUCT(BlueprintType)

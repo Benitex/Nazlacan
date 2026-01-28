@@ -50,7 +50,9 @@ void ACustomPlayerController::SetupInputComponent() {
     Input->BindAction(SprintInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnSprintPressed);
     Input->BindAction(SprintInput, ETriggerEvent::Completed, this, &ACustomPlayerController::OnSprintReleased);
 
-    Input->BindAction(Attack1Input, ETriggerEvent::Started, this, &ACustomPlayerController::OnAttack1Pressed);
+    Input->BindAction(Attack1Input, ETriggerEvent::Started, this, &ACustomPlayerController::OnAttackButtonPressed, 1);
+    Input->BindAction(Attack2Input, ETriggerEvent::Started, this, &ACustomPlayerController::OnAttackButtonPressed, 2);
+    Input->BindAction(Attack3Input, ETriggerEvent::Started, this, &ACustomPlayerController::OnAttackButtonPressed, 3);
     Input->BindAction(DodgeInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnDodgePressed);
 }
 
@@ -84,17 +86,34 @@ void ACustomPlayerController::OnMoveInputReleased() {
     }
 }
 
-void ACustomPlayerController::OnAttack1Pressed() {
+void ACustomPlayerController::OnAttackButtonPressed(const FInputActionValue& Value, const int ButtonNumber) {
     AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
     if (!PlayerCharacter) return;
+    if (!CombatStyleCombos.Contains(PlayerCharacter->GetState()->GetCombatStyle())) return;
+
+    FGameplayTag AttackTag;
+    const FCombatStyleCombo CombatStyleCombo = CombatStyleCombos[PlayerCharacter->GetState()->GetCombatStyle()];
 
     if (PlayerCharacter->IsFalling()) {
-        // TODO air slash
+        AttackTag = CombatStyleCombo.AerialAttack;
     } else {
-        const FGameplayTag AttackTag = Attack1Combos.FindRef(PlayerCharacter->GetLastAttack(), FGameplayTag::EmptyTag);
-        if (AttackTag == FGameplayTag::EmptyTag) return;
-        PlayerCharacter->PrepareAttackWithTag(AttackTag);
+        TMap<FGameplayTag, FGameplayTag> InputCombos;
+        if (ButtonNumber == 1) {
+            InputCombos = CombatStyleCombo.Attack1Input;
+        } else if (ButtonNumber == 2) {
+            InputCombos = CombatStyleCombo.Attack2Input;
+        } else if (ButtonNumber == 3) {
+            InputCombos = CombatStyleCombo.Attack3Input;
+        } else {
+            UE_LOG(LogTemp, Warning, TEXT("Invalid attack button number (%d) assigned in Controller"), ButtonNumber);
+            return;
+        }
+
+        AttackTag = InputCombos.FindRef(PlayerCharacter->GetLastAttack(), FGameplayTag::EmptyTag);
     }
+
+    if (AttackTag == FGameplayTag::EmptyTag) return;
+    PlayerCharacter->PrepareAttackWithTag(AttackTag);
 }
 
 void ACustomPlayerController::OnJumpPressed() {

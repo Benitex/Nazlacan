@@ -10,7 +10,7 @@ class NAZLACAN_API UBaseGameplayAbility : public UGameplayAbility {
 	GENERATED_BODY()
 
 protected:
-	TWeakObjectPtr<AMainCharacter> MainCharacter;
+	TWeakInterfacePtr<IBaseCharacter> Character;
 
 public:
 	UBaseGameplayAbility();
@@ -26,7 +26,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void LookAtDirection(FVector WorldDirection) const;
-	
+
 	UFUNCTION(BlueprintCallable)
 	virtual float GetActorSpeed() const;
 };

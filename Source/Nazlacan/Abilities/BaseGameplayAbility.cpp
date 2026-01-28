@@ -11,20 +11,29 @@ void UBaseGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInf
 
     AActor* Actor = ActorInfo->AvatarActor.Get();
     returnIfNull(Actor);
-    MainCharacter = Cast<AMainCharacter>(Actor);
+    Character = Cast<IBaseCharacter>(Actor);
 }
 
 FVector UBaseGameplayAbility::GetIntendedDirection() const {
-    if (!MainCharacter.IsValid()) {
-        return GetAvatarActorFromActorInfo()->GetActorForwardVector();
+    if (const AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get())) {
+        FVector Direction = MainCharacter->GetMovementIntendedDirection();
+        if (Direction.IsNearlyZero()) {
+            Direction = MainCharacter->GetActorForwardVector();
+        }
+
+        return Direction.GetSafeNormal();
     }
 
-    FVector Direction = MainCharacter->GetMovementIntendedDirection();
-    if (Direction.IsNearlyZero()) {
-        Direction = MainCharacter->GetActorForwardVector();
+    if (const APawn* Pawn = Cast<APawn>(Character.Get())) {
+        FVector Direction = Pawn->GetLastMovementInputVector();
+        if (Direction.IsNearlyZero()) {
+            Direction = GetAvatarActorFromActorInfo()->GetActorForwardVector();
+        }
+
+        return Direction.GetSafeNormal();
     }
 
-    return Direction.GetSafeNormal();
+    return GetAvatarActorFromActorInfo()->GetActorForwardVector();
 }
 
 void UBaseGameplayAbility::LookAtDirection(const FVector WorldDirection) const {

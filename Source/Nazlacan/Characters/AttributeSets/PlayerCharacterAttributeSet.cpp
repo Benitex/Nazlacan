@@ -53,6 +53,7 @@ void UPlayerCharacterAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimePr
     DOREPLIFETIME_CONDITION_NOTIFY(UPlayerCharacterAttributeSet, MaxEnergy, COND_OwnerOnly, REPNOTIFY_OnChanged);
     DOREPLIFETIME_CONDITION_NOTIFY(UPlayerCharacterAttributeSet, Energy, COND_OwnerOnly, REPNOTIFY_OnChanged);
     DOREPLIFETIME_CONDITION_NOTIFY(UPlayerCharacterAttributeSet, Level, COND_OwnerOnly, REPNOTIFY_OnChanged);
+    DOREPLIFETIME_CONDITION_NOTIFY(UPlayerCharacterAttributeSet, Experience, COND_OwnerOnly, REPNOTIFY_OnChanged);
     DOREPLIFETIME_CONDITION_NOTIFY(UPlayerCharacterAttributeSet, MaxSkullCount, COND_OwnerOnly, REPNOTIFY_OnChanged);
     DOREPLIFETIME_CONDITION_NOTIFY(UPlayerCharacterAttributeSet, SkullCount, COND_OwnerOnly, REPNOTIFY_OnChanged);
 }
@@ -67,6 +68,10 @@ void UPlayerCharacterAttributeSet::OnRep_Energy(const FGameplayAttributeData& Ol
 
 void UPlayerCharacterAttributeSet::OnRep_Level(const FGameplayAttributeData& OldLevel) {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UPlayerCharacterAttributeSet, Level, OldLevel);
+}
+
+void UPlayerCharacterAttributeSet::OnRep_Experience(const FGameplayAttributeData& OldExperience) {
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UPlayerCharacterAttributeSet, Experience, OldExperience);
 }
 
 void UPlayerCharacterAttributeSet::OnRep_MaxSkullCount(const FGameplayAttributeData& OldMaxSkullCount) {

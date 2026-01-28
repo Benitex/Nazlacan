@@ -22,7 +22,7 @@ protected:
 	float AnimationBaseSpeed = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack", Meta = (ClampMin = "0.0", ClampMax = "3.0"))
-	float VelocityModifier = 1;
+	float SpeedModifier = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	bool UsesRightHandWeapon = true;

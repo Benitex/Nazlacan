@@ -3,10 +3,6 @@
 
 UAnimMontage* UHitReact::GetHitMontage() const {
     AActor* Actor = GetAvatarActorFromActorInfo();
-
-    if (const AMainCharacter* MainCharacter = Cast<AMainCharacter>(Actor)) {
-        return MainCharacter->GetHitReactMontage();
-    }
-
-    return nullptr;
+    const IBaseCharacter* Character = Cast<IBaseCharacter>(Actor);
+    return Character->GetHitReactMontage();
 }

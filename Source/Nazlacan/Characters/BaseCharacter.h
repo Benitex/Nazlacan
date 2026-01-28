@@ -1,0 +1,24 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Nazlacan/Systems/CustomPlayerState.h"
+#include "Nazlacan/Weapons/Weapon.h"
+#include "UObject/Interface.h"
+#include "BaseCharacter.generated.h"
+
+UINTERFACE(MinimalAPI)
+class UBaseCharacter : public UInterface {
+	GENERATED_BODY()
+};
+
+class NAZLACAN_API IBaseCharacter {
+	GENERATED_BODY()
+
+public:
+	virtual AWeapon* GetEquippedWeapon(const uint8 HandIndex = ACustomPlayerState::RightHandIndex) const = 0;
+
+	virtual float GetExperienceDroppedOnDeath() const = 0;
+
+	virtual UAnimMontage* GetHitReactMontage() const = 0;
+	virtual UAnimMontage* GetDeathMontage() const = 0;
+};

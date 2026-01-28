@@ -2,29 +2,28 @@
 #include "Nazlacan/Characters/MainCharacter.h"
 
 void UMeleeAttackBase::TryToActivateNextAttack() {
-    if (MainCharacter.IsValid()) MainCharacter->TryToActivateNextAttack();
+    if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get())) {
+        MainCharacter->TryToActivateNextAttack();
+    }
 }
 
 void UMeleeAttackBase::StartHitDetection() const {
-    if (!MainCharacter.IsValid()) return;
     if (!ensure(UsesRightHandWeapon || UsesLeftHandWeapon)) return;
 
     if (UsesRightHandWeapon) {
         const FGameplayEffectSpecHandle SpecHandle = GetEffectSpecHandle(ACustomPlayerState::RightHandIndex);
-        AWeapon* Weapon = MainCharacter->GetState()->GetEquippedWeapon(ACustomPlayerState::RightHandIndex);
-        Weapon->StartCollisionDetection(MainCharacter.Get(), SpecHandle);
+        AWeapon* Weapon = Character->GetEquippedWeapon(ACustomPlayerState::RightHandIndex);
+        Weapon->StartCollisionDetection(GetAvatarActorFromActorInfo(), SpecHandle);
     }
     if (UsesLeftHandWeapon) {
         const FGameplayEffectSpecHandle SpecHandle = GetEffectSpecHandle(ACustomPlayerState::LeftHandIndex);
-        AWeapon* Weapon = MainCharacter->GetState()->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex);
-        Weapon->StartCollisionDetection(MainCharacter.Get(), SpecHandle);
+        AWeapon* Weapon = Character->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex);
+        Weapon->StartCollisionDetection(GetAvatarActorFromActorInfo(), SpecHandle);
     }
 }
 
 FGameplayEffectSpecHandle UMeleeAttackBase::GetEffectSpecHandle(const uint8 ForHand) const {
-    ensure(MainCharacter.IsValid());
-
-    float WeaponDamage = MainCharacter->GetState()->GetEquippedWeapon(ForHand)->GetWeaponData().BaseDamage;
+    float WeaponDamage = Character->GetEquippedWeapon(ForHand)->GetWeaponData().BaseDamage;
     WeaponDamage *= MotionValue;
 
     static const FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Data.Damage"));
@@ -35,32 +34,36 @@ FGameplayEffectSpecHandle UMeleeAttackBase::GetEffectSpecHandle(const uint8 ForH
 }
 
 void UMeleeAttackBase::StopHitDetection() const {
-    if (!MainCharacter.IsValid()) return;
+    if (!Character.IsValid()) return;
 
     if (UsesRightHandWeapon) {
-        const AWeapon* Weapon = MainCharacter->GetState()->GetEquippedWeapon(ACustomPlayerState::RightHandIndex);
+        const AWeapon* Weapon = Character->GetEquippedWeapon(ACustomPlayerState::RightHandIndex);
         Weapon->StopCollisionDetection();
     }
     if (UsesLeftHandWeapon) {
-        const AWeapon* Weapon = MainCharacter->GetState()->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex);
+        const AWeapon* Weapon = Character->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex);
         Weapon->StopCollisionDetection();
     }
 }
 
 bool UMeleeAttackBase::ShouldMoveDuringAttack() const {
-    if (VelocityModifier == 0) return false;
+    if (SpeedModifier == 0) return false;
 
-    if (!MainCharacter.IsValid()) return false;
+    const AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get());
+    if (!MainCharacter) return false;
     if (MainCharacter->GetMovementIntendedDirection().IsNearlyZero()) return false;
 
     return true;
 }
 
 bool UMeleeAttackBase::ShouldEndAttackEarly() const {
-    if (!MainCharacter.IsValid()) return false;
+    const AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get());
+    if (!MainCharacter) return false;
     return MainCharacter->IsNextAttackPrepared();
 }
 
 void UMeleeAttackBase::RemoveLastAttackTag() const {
-    if (MainCharacter.IsValid()) MainCharacter->RemoveLastAttack(GetAssetTags());
+    if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get())) {
+        MainCharacter->RemoveLastAttack(GetAssetTags());
+    }
 }

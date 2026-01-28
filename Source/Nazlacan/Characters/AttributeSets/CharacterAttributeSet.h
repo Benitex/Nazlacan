@@ -16,9 +16,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attribute", ReplicatedUsing = OnRep_Health)
 	FGameplayAttributeData Health;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attribute")
-	FGameplayAttributeData ExperienceDroppedOnDeath;
-
 public:
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
@@ -30,4 +27,7 @@ public:
 	UFUNCTION() virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+private:
+	void GrantExperienceToKiller(const FGameplayEffectModCallbackData& Data);
 };

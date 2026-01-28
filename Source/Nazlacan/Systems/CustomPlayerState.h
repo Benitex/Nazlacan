@@ -30,6 +30,9 @@ class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySyst
 	UPROPERTY(EditAnywhere, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
 	TArray<TSubclassOf<UGameplayAbility>> Attacks;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UGameplayEffect> ExperienceGrantEffect;
+
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	FDataTableRowHandle DefaultWeapons[2];
@@ -73,6 +76,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	AWeapon* GetEquippedWeapon(const uint8 HandIndex) const { return EquippedWeapons[HandIndex]; }
+
+	TSubclassOf<UGameplayEffect> GetExperienceGrantEffect() const { return ExperienceGrantEffect; }
 
 private:
 	void UpdateCombatStyle();

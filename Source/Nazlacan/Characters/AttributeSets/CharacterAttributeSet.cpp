@@ -20,6 +20,7 @@ void UCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
         if (Health.GetCurrentValue() <= 0) {
             static const FGameplayTagContainer Tag = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Reaction.Death")));
             GetOwningAbilitySystemComponent()->TryActivateAbilitiesByTag(Tag);
+            GrantExperienceToKiller(Data);
 
         } else if (Data.EvaluatedData.Magnitude < 0) {
             static const FGameplayTagContainer Tag = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Reaction.BeingHit")));
@@ -32,6 +33,30 @@ void UCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
             SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));
         }
     }
+}
+
+void UCharacterAttributeSet::GrantExperienceToKiller(const FGameplayEffectModCallbackData& Data) {
+    AActor* Actor = Data.Target.AbilityActorInfo->AvatarActor.Get();
+    const IBaseCharacter* DeadCharacter = Cast<IBaseCharacter>(Actor);
+    const float BaseExperience = DeadCharacter->GetExperienceDroppedOnDeath();
+
+    const FGameplayEffectContextHandle DeathContext = Data.EffectSpec.GetContext();
+    UAbilitySystemComponent* KillerAbilitySystem = DeathContext.GetInstigatorAbilitySystemComponent();
+    const AMainCharacter* Killer = Cast<AMainCharacter>(DeathContext.GetInstigator());
+    if (!Killer) return;
+
+    FGameplayEffectContextHandle ExperienceEffectContext = KillerAbilitySystem->MakeEffectContext();
+    ExperienceEffectContext.AddSourceObject(this);
+
+    const FGameplayEffectSpecHandle EffectSpecHandle = KillerAbilitySystem->MakeOutgoingSpec(
+        Killer->GetState()->GetExperienceGrantEffect(),
+        1,
+        ExperienceEffectContext
+    );
+    static const FGameplayTag ExperienceTag = FGameplayTag::RequestGameplayTag(FName("Data.Experience"));
+    EffectSpecHandle.Data.Get()->SetSetByCallerMagnitude(ExperienceTag, BaseExperience);
+
+    KillerAbilitySystem->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }
 
 void UCharacterAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {

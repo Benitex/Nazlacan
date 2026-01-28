@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include "AbilitySystemInterface.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
@@ -10,7 +11,7 @@
 #include "MainCharacter.generated.h"
 
 UCLASS()
-class NAZLACAN_API AMainCharacter : public ACharacter, public IAbilitySystemInterface {
+class NAZLACAN_API AMainCharacter : public ACharacter, public IBaseCharacter, public IAbilitySystemInterface {
     GENERATED_BODY()
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
@@ -23,7 +24,7 @@ class NAZLACAN_API AMainCharacter : public ACharacter, public IAbilitySystemInte
     TMap<ECombatStyle, UAnimMontage*> HitReactMontages;
     UPROPERTY(EditDefaultsOnly)
     TMap<ECombatStyle, UAnimMontage*> DeathMontages;
-    
+
     UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
     FName RightHandSocketName = TEXT("right_hand_socket");
     UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
@@ -33,6 +34,9 @@ protected:
     // How much to reduce the upward velocity after stopping a jump.
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character Movement: Jumping / Falling", meta = (ClampMin = 0, ClampMax = 1))
     float JumpBreakMultiplier = 0;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float ExperienceDroppedOnDeath = 0;
 
 private:
     TWeakObjectPtr<ACustomPlayerState> State;
@@ -58,6 +62,14 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual ACustomPlayerState* GetState() const { return State.Get(); }
+
+    virtual AWeapon* GetEquippedWeapon(const uint8 HandIndex = ACustomPlayerState::RightHandIndex) const override {
+        return State->GetEquippedWeapon(HandIndex);
+    }
+
+    virtual float GetExperienceDroppedOnDeath() const override { return ExperienceDroppedOnDeath; }
+    virtual UAnimMontage* GetHitReactMontage() const override;
+    virtual UAnimMontage* GetDeathMontage() const override { return DeathMontages[State->GetCombatStyle()]; }
 
     virtual void StopJumping() override;
 
@@ -93,9 +105,6 @@ public:
     void SetMovementIntendedDirection(const FVector& NewDirection) { MovementIntendedDirection = NewDirection; }
 
     float GetDefaultMaxWalkSpeed() const { return DefaultMaxWalkSpeed; }
-
-    UAnimMontage* GetHitReactMontage() const;
-    UAnimMontage* GetDeathMontage() const { return DeathMontages[State->GetCombatStyle()]; }
     FName GetRightHandSocketName() const { return RightHandSocketName; }
     FName GetLeftHandSocketName() const { return LeftHandSocketName; }
 

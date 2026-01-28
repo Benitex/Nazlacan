@@ -19,6 +19,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attribute", ReplicatedUsing = OnRep_Level)
 	FGameplayAttributeData Level;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attribute", ReplicatedUsing = OnRep_Experience)
+	FGameplayAttributeData Experience;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attribute", ReplicatedUsing = OnRep_MaxSkullCount)
 	FGameplayAttributeData MaxSkullCount;
 
@@ -36,6 +39,8 @@ public:
 
 	ATTRIBUTE_ACCESSORS_BASIC(UPlayerCharacterAttributeSet, Level);
 	UFUNCTION() virtual void OnRep_Level(const FGameplayAttributeData& OldLevel);
+	ATTRIBUTE_ACCESSORS_BASIC(UPlayerCharacterAttributeSet, Experience);
+	UFUNCTION() virtual void OnRep_Experience(const FGameplayAttributeData& OldExperience);
 
 	ATTRIBUTE_ACCESSORS_BASIC(UPlayerCharacterAttributeSet, MaxSkullCount);
 	UFUNCTION() virtual void OnRep_MaxSkullCount(const FGameplayAttributeData& OldMaxSkullCount);

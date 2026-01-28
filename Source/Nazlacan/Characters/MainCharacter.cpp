@@ -107,8 +107,13 @@ UAnimMontage* AMainCharacter::GetHitReactMontage() const {
 }
 
 bool AMainCharacter::CanMove() const {
-	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("Status.MovementLocked"));
-	return !GetAbilitySystemComponent()->HasMatchingGameplayTag(Tag);
+	static const FGameplayTag MovementLocked = FGameplayTag::RequestGameplayTag(FName("Status.MovementLocked"));
+	if (GetAbilitySystemComponent()->HasMatchingGameplayTag(MovementLocked)) return false;
+
+	static const FGameplayTag Dead = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+	if (GetAbilitySystemComponent()->HasMatchingGameplayTag(Dead)) return false;
+
+	return true;
 }
 
 bool AMainCharacter::IsAttacking() const {

@@ -10,7 +10,7 @@ void UMainCharacterAnimInstance::NativeInitializeAnimation() {
 
 void UMainCharacterAnimInstance::LoadCharacter() {
     AnimatedCharacter = Cast<AMainCharacter>(TryGetPawnOwner());
-    if (AnimatedCharacter) {
+    if (IsValid(AnimatedCharacter)) {
         AnimatedCharacterMovementComponent = Cast<UCharacterMovementComponent>(AnimatedCharacter->GetMovementComponent());
         AnimatedPlayerState = AnimatedCharacter->GetPlayerState<ACustomPlayerState>();
 
@@ -25,8 +25,10 @@ void UMainCharacterAnimInstance::LoadCharacter() {
 void UMainCharacterAnimInstance::NativeUpdateAnimation(const float DeltaSeconds) {
     Super::NativeUpdateAnimation(DeltaSeconds);
 
-    if (!AnimatedCharacter || !AnimatedCharacterMovementComponent || !AnimatedPlayerState) LoadCharacter();
-    if (!AnimatedCharacter || !AnimatedCharacterMovementComponent || !AnimatedPlayerState) return;
+    if (!IsValid(AnimatedCharacter) || !IsValid(AnimatedCharacterMovementComponent) || !IsValid(AnimatedPlayerState)) {
+        LoadCharacter();
+    }
+    if (!IsValid(AnimatedCharacter) || !IsValid(AnimatedCharacterMovementComponent) || !IsValid(AnimatedPlayerState)) return;
 
     Speed = AnimatedCharacter->GetVelocity().Size();
     bIsInAir = AnimatedCharacterMovementComponent->IsFalling();

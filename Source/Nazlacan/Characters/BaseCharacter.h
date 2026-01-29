@@ -17,6 +17,9 @@ class NAZLACAN_API IBaseCharacter {
 public:
 	virtual AWeapon* GetEquippedWeapon(const uint8 HandIndex = ACustomPlayerState::RightHandIndex) const = 0;
 
+    virtual ESun GetDominantSun() const = 0;
+	virtual float GetCorruptionPercent() const = 0;
+
 	virtual float GetExperienceDroppedOnDeath() const = 0;
 
 	virtual UAnimMontage* GetHitReactMontage() const = 0;

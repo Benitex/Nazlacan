@@ -33,9 +33,12 @@ class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySyst
 	UPROPERTY(EditDefaultsOnly, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayEffect> ExperienceGrantEffect;
 
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float StartingWeaponsCorruption;
+
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
-	FDataTableRowHandle DefaultWeapons[2];
+	FDataTableRowHandle StartingWeapons[2];
 
 	static constexpr uint8 RightHandIndex = 0;
 	static constexpr uint8 LeftHandIndex = 1;
@@ -65,21 +68,29 @@ public:
 		return AbilitySystemComponent;
 	}
 
+	// Pass nullptr in LeftHandWeapon to only equip the right hand weapon and unequip the left hand weapon
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void EquipWeapons(const FDataTableRowHandle& RightHandWeapon, const FDataTableRowHandle& LeftHandWeapon);
+	void EquipWeapons(AWeapon* RightHandWeapon, AWeapon* LeftHandWeapon);
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void RemoveWeapon(uint8 HandIndex);
+	void RemoveLeftHandWeapon() { RemoveWeapon(LeftHandIndex); UpdateCombatStyle(); }
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	AWeapon* GetEquippedWeapon(const uint8 HandIndex) const { return EquippedWeapons[HandIndex]; }
+
+	ESun GetDominantSun() const;
+	float GetCorruptionPercent() const;
 
 	TSubclassOf<UGameplayEffect> GetExperienceGrantEffect() const { return ExperienceGrantEffect; }
 
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void EquipWeapon(const FDataTableRowHandle& WeaponRowHandle, uint8 HandIndex);
+	void EquipWeapon(AWeapon* Weapon, uint8 HandIndex);
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void RemoveWeapon(uint8 HandIndex);
 
 private:
 	void UpdateCombatStyle();
+	void EquipStartingWeapons();
 };

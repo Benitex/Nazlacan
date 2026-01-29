@@ -67,6 +67,9 @@ public:
         return State->GetEquippedWeapon(HandIndex);
     }
 
+    virtual ESun GetDominantSun() const override { return State->GetDominantSun(); }
+    virtual float GetCorruptionPercent() const override { return State->GetCorruptionPercent(); }
+
     virtual float GetExperienceDroppedOnDeath() const override { return ExperienceDroppedOnDeath; }
     virtual UAnimMontage* GetHitReactMontage() const override;
     virtual UAnimMontage* GetDeathMontage() const override { return DeathMontages[State->GetCombatStyle()]; }

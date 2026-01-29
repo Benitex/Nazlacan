@@ -21,7 +21,7 @@ ACustomPlayerState::ACustomPlayerState() {
 void ACustomPlayerState::SetDefaultAbilitiesAndEffects() {
     if (GetLocalRole() != ROLE_Authority) return;
 
-    EquipWeapons(DefaultWeapons[RightHandIndex], DefaultWeapons[LeftHandIndex]);
+    EquipStartingWeapons();
 
     FGameplayEffectContextHandle Context = AbilitySystemComponent->MakeEffectContext();
     Context.AddSourceObject(this);
@@ -39,37 +39,47 @@ void ACustomPlayerState::SetDefaultAbilitiesAndEffects() {
     }
 }
 
-void ACustomPlayerState::EquipWeapon(const FDataTableRowHandle& WeaponRowHandle, const uint8 HandIndex) {
-    returnIfNull(WeaponRowHandle.DataTable);
-    AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
-    returnIfNull(MainCharacter);
-    USkeletalMeshComponent* Mesh = MainCharacter->GetMesh();
-    returnIfNull(Mesh);
-
-    RemoveWeapon(HandIndex);
-
-    static const FString ContextString(TEXT("Equipping Weapon"));
-    const FWeaponData* WeaponData = WeaponRowHandle.DataTable->FindRow<FWeaponData>(WeaponRowHandle.RowName, ContextString);
-    returnIfNull(WeaponData);
-
-    const FName SocketName = HandIndex == RightHandIndex ? MainCharacter->GetRightHandSocketName() : MainCharacter->GetLeftHandSocketName();
-    const FTransform SocketTransform = Mesh->GetSocketTransform(SocketName);
-
-    AWeapon* SpawnedWeapon = AWeapon::Spawn(*WeaponData, SocketTransform, MainCharacter);
-    returnIfNull(SpawnedWeapon);
-
-    SpawnedWeapon->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetIncludingScale, SocketName);
-    EquippedWeapons[HandIndex] = SpawnedWeapon;
-}
-
-void ACustomPlayerState::EquipWeapons(const FDataTableRowHandle& RightHandWeapon, const FDataTableRowHandle& LeftHandWeapon) {
-    if (RightHandWeapon.DataTable != nullptr && RightHandWeapon.RowName != NAME_None) {
-        EquipWeapon(RightHandWeapon, RightHandIndex);
-    } else {
-        RemoveWeapon(RightHandIndex);
+void ACustomPlayerState::EquipStartingWeapons() {
+    if (!IsValid(StartingWeapons[RightHandIndex].DataTable) || StartingWeapons[RightHandIndex].RowName == NAME_None) {
+        return;
     }
 
-    if (LeftHandWeapon.DataTable != nullptr && LeftHandWeapon.RowName != NAME_None) {
+    TArray<uint8> HandIndices = { RightHandIndex };
+    if (IsValid(StartingWeapons[RightHandIndex].DataTable) && StartingWeapons[RightHandIndex].RowName != NAME_None) {
+        HandIndices.Add(LeftHandIndex);
+    }
+
+    AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
+    returnIfNull(MainCharacter);
+    const USkeletalMeshComponent* Mesh = MainCharacter->GetMesh();
+    returnIfNull(Mesh);
+
+    for (const uint8 HandIndex : HandIndices) {
+        const FDataTableRowHandle RowHandle = HandIndex == RightHandIndex ? StartingWeapons[RightHandIndex] : StartingWeapons[LeftHandIndex];
+
+        static const FString ContextString(TEXT("Equipping Weapon"));
+        const FWeaponData* WeaponData = RowHandle.DataTable->FindRow<FWeaponData>(RowHandle.RowName, ContextString);
+        if (!ensure(WeaponData)) continue;
+
+        const FName SocketName = HandIndex == RightHandIndex ? MainCharacter->GetRightHandSocketName() : MainCharacter->GetLeftHandSocketName();
+        const FTransform SocketTransform = Mesh->GetSocketTransform(SocketName);
+
+        AWeapon* Weapon = AWeapon::Spawn(*WeaponData, StartingWeaponsCorruption, GetRandomSun(), SocketTransform, MainCharacter);
+        continueIfNull(Weapon);
+        EquipWeapon(Weapon, HandIndex);
+    }
+
+    UpdateCombatStyle();
+}
+
+void ACustomPlayerState::EquipWeapons(AWeapon* RightHandWeapon, AWeapon* LeftHandWeapon) {
+    returnIfNull(RightHandWeapon);
+
+    if (IsValid(RightHandWeapon)) {
+        EquipWeapon(RightHandWeapon, RightHandIndex);
+    }
+
+    if (IsValid(LeftHandWeapon)) {
         EquipWeapon(LeftHandWeapon, LeftHandIndex);
     } else {
         RemoveWeapon(LeftHandIndex);
@@ -78,11 +88,24 @@ void ACustomPlayerState::EquipWeapons(const FDataTableRowHandle& RightHandWeapon
     UpdateCombatStyle();
 }
 
-void ACustomPlayerState::RemoveWeapon(const uint8 HandIndex) {
-    if (EquippedWeapons[HandIndex] == nullptr) return;
+void ACustomPlayerState::EquipWeapon(AWeapon* Weapon, const uint8 HandIndex) {
+    const AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
+    returnIfNull(MainCharacter);
+    USkeletalMeshComponent* Mesh = MainCharacter->GetMesh();
+    returnIfNull(Mesh);
 
+    const FName SocketName = HandIndex == RightHandIndex ? MainCharacter->GetRightHandSocketName() : MainCharacter->GetLeftHandSocketName();
+
+    RemoveWeapon(HandIndex);
+    Weapon->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetIncludingScale, SocketName);
+    EquippedWeapons[HandIndex] = Weapon;
+}
+
+void ACustomPlayerState::RemoveWeapon(const uint8 HandIndex) {
+    if (!IsValid(EquippedWeapons[HandIndex])) return;
     EquippedWeapons[HandIndex]->Destroy();
     EquippedWeapons[HandIndex] = nullptr;
+    UpdateCombatStyle();
 }
 
 void ACustomPlayerState::UpdateCombatStyle() {
@@ -107,7 +130,7 @@ void ACustomPlayerState::UpdateCombatStyle() {
     } else if (RightHandWeaponType == EWeaponType::Bow) {
         CombatStyle = ECombatStyle::Archery;
     } else {
-        UE_LOG(LogTemp, Warning, TEXT("Invalid weapon combination selected."));
+        UE_LOG(LogTemp, Warning, TEXT("%s is using an invalid weapon combination."), *(GetPawn()->GetName()));
     }
 
     static const TMap<ECombatStyle, FGameplayTag> CombatStyleTags = {
@@ -123,4 +146,30 @@ void ACustomPlayerState::UpdateCombatStyle() {
 
     AbilitySystemComponent->RemoveLooseGameplayTags(FGameplayTagContainer::CreateFromArray(CombatStyles));
     AbilitySystemComponent->AddLooseGameplayTag(CombatStyleTags[CombatStyle]);
+}
+
+ESun ACustomPlayerState::GetDominantSun() const {
+    if (!IsValid(EquippedWeapons[LeftHandIndex])) {
+        return EquippedWeapons[RightHandIndex]->GetDominantSun();
+    }
+
+    if (EquippedWeapons[RightHandIndex]->GetCorruptionIntensity() > EquippedWeapons[LeftHandIndex]->GetCorruptionIntensity()) {
+        return EquippedWeapons[RightHandIndex]->GetDominantSun();
+    } else {
+        return EquippedWeapons[LeftHandIndex]->GetDominantSun();
+    }
+}
+
+float ACustomPlayerState::GetCorruptionPercent() const {
+    float TotalCorruption = 0;
+
+    if (IsValid(EquippedWeapons[RightHandIndex])) {
+        TotalCorruption += EquippedWeapons[RightHandIndex]->GetCorruptionIntensity();
+    }
+
+    if (IsValid(EquippedWeapons[LeftHandIndex])) {
+        TotalCorruption += EquippedWeapons[LeftHandIndex]->GetCorruptionIntensity();
+    }
+
+    return TotalCorruption;
 }

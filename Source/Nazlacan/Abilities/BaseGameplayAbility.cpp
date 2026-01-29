@@ -15,7 +15,7 @@ void UBaseGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInf
 }
 
 FVector UBaseGameplayAbility::GetIntendedDirection() const {
-    if (const AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get())) {
+    if (const AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get()); IsValid(MainCharacter)) {
         FVector Direction = MainCharacter->GetMovementIntendedDirection();
         if (Direction.IsNearlyZero()) {
             Direction = MainCharacter->GetActorForwardVector();

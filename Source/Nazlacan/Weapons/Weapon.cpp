@@ -4,7 +4,10 @@
 #include "AbilitySystemInterface.h"
 #include "Nazlacan/Macros.h"
 
-AWeapon* AWeapon::Spawn(const FWeaponData& WeaponData, const FTransform& SpawnPosition, APawn* NewOwner) {
+AWeapon* AWeapon::Spawn(
+	const FWeaponData& WeaponData, const float Corruption, const ESun Sun,
+	const FTransform& SpawnPosition, APawn* NewOwner
+) {
 	AWeapon* SpawnedWeapon = NewOwner->GetWorld()->SpawnActorDeferred<AWeapon>(
 		StaticClass(),
 		SpawnPosition,
@@ -13,10 +16,13 @@ AWeapon* AWeapon::Spawn(const FWeaponData& WeaponData, const FTransform& SpawnPo
 		ESpawnActorCollisionHandlingMethod::AlwaysSpawn
 	);
 	returnIfNull(SpawnedWeapon) nullptr;
-	return InternalSpawn(SpawnedWeapon, WeaponData, SpawnPosition);
+	return InternalSpawn(SpawnedWeapon, WeaponData, Corruption, Sun, SpawnPosition);
 }
 
-AWeapon* AWeapon::Spawn(const FWeaponData& WeaponData, const FTransform& SpawnPosition, UWorld* World) {
+AWeapon* AWeapon::Spawn(
+	const FWeaponData& WeaponData, const float Corruption, const ESun Sun,
+	const FTransform& SpawnPosition, UWorld* World
+) {
 	AWeapon* SpawnedWeapon = World->SpawnActorDeferred<AWeapon>(
 		StaticClass(),
 		SpawnPosition,
@@ -25,11 +31,19 @@ AWeapon* AWeapon::Spawn(const FWeaponData& WeaponData, const FTransform& SpawnPo
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
 	);
 	returnIfNull(SpawnedWeapon) nullptr;
-	return InternalSpawn(SpawnedWeapon, WeaponData, SpawnPosition);
+	return InternalSpawn(SpawnedWeapon, WeaponData, Corruption, Sun, SpawnPosition);
 }
 
-AWeapon* AWeapon::InternalSpawn(AWeapon* SpawnedWeapon, const FWeaponData& WeaponData, const FTransform& SpawnPosition) {
+AWeapon* AWeapon::InternalSpawn(
+	AWeapon* SpawnedWeapon,
+	const FWeaponData& WeaponData,
+	const float CorruptionIntensity,
+	const ESun DominantSun,
+	const FTransform& SpawnPosition
+) {
 	SpawnedWeapon->WeaponDataTable = WeaponData;
+	SpawnedWeapon->CorruptionIntensity = CorruptionIntensity;
+	SpawnedWeapon->DominantSun = DominantSun;
 	SpawnedWeapon->FinishSpawning(SpawnPosition);
 	return SpawnedWeapon;
 }

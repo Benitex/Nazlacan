@@ -20,7 +20,7 @@ void ACustomPlayerController::OnRep_Pawn() {
 }
 
 void ACustomPlayerController::SetControlledCharacter(APawn* InPawn) {
-    if (!InPawn) {
+    if (!IsValid(InPawn)) {
         ControlledCharacter = nullptr;
         return;
     }
@@ -66,7 +66,7 @@ void ACustomPlayerController::OnMoveInput(const FInputActionValue& Value) {
     const FVector2D MovementDirection = Value.Get<FVector2D>();
 
     AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
-    if (!PlayerCharacter) return;
+    if (!IsValid(PlayerCharacter)) return;
 
     const FRotator YawRotation(0, GetControlRotation().Yaw, 0);
     const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -81,14 +81,14 @@ void ACustomPlayerController::OnMoveInput(const FInputActionValue& Value) {
 }
 
 void ACustomPlayerController::OnMoveInputReleased() {
-    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get()) {
+    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); IsValid(PlayerCharacter)) {
         PlayerCharacter->SetMovementIntendedDirection(FVector::ZeroVector);
     }
 }
 
 void ACustomPlayerController::OnAttackButtonPressed(const FInputActionValue& Value, const int ButtonNumber) {
     AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
-    if (!PlayerCharacter) return;
+    if (!IsValid(PlayerCharacter)) return;
     if (!CombatStyleCombos.Contains(PlayerCharacter->GetState()->GetCombatStyle())) return;
 
     FGameplayTag AttackTag;
@@ -118,34 +118,34 @@ void ACustomPlayerController::OnAttackButtonPressed(const FInputActionValue& Val
 
 void ACustomPlayerController::OnJumpPressed() {
     AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
-    if (!PlayerCharacter || !PlayerCharacter->CanMove() || PlayerCharacter->IsFalling()) return;
+    if (!IsValid(PlayerCharacter) || !PlayerCharacter->CanMove() || PlayerCharacter->IsFalling()) return;
 
     PlayerCharacter->Jump();
 }
 
 void ACustomPlayerController::OnJumpReleased() {
-    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get()) {
+    if (AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); IsValid(PlayerCharacter)) {
         PlayerCharacter->StopJumping();
     }
 }
 
 void ACustomPlayerController::OnSprintPressed() {
     const AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
-    if (!PlayerCharacter || PlayerCharacter->IsFalling()) return;
+    if (!IsValid(PlayerCharacter) || PlayerCharacter->IsFalling()) return;
     if (PlayerCharacter->GetMovementIntendedDirection().IsNearlyZero()) return;
 
     PlayerCharacter->StartSprinting();
 }
 
 void ACustomPlayerController::OnSprintReleased() {
-    if (const AMainCharacter* PlayerCharacter = ControlledCharacter.Get()) {
+    if (const AMainCharacter* PlayerCharacter = ControlledCharacter.Get(); IsValid(PlayerCharacter)) {
         PlayerCharacter->StopSprinting();
     }
 }
 
 void ACustomPlayerController::OnDodgePressed() {
     const AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
-    if (!PlayerCharacter || PlayerCharacter->IsFalling()) return;
+    if (!IsValid(PlayerCharacter) || PlayerCharacter->IsFalling()) return;
 
 	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("Ability.Active.Roll"));
     PlayerCharacter->ActivateAbilityWithTag(Tag);

@@ -35,6 +35,6 @@ void UGameplayEffectAnimNotifyState::NotifyEnd(
 UAbilitySystemComponent* UGameplayEffectAnimNotifyState::GetAbilitySystem(const USkeletalMeshComponent* FromMesh) {
     AActor* Owner = FromMesh->GetOwner();
     const IAbilitySystemInterface* ActorWithComponent = Cast<IAbilitySystemInterface>(Owner);
-    returnIfNull(ActorWithComponent) nullptr;
+    if (!ensure(ActorWithComponent)) return nullptr;
     return ActorWithComponent->GetAbilitySystemComponent();
 }

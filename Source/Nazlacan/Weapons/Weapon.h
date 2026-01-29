@@ -5,6 +5,7 @@
 #include "WeaponData.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "Nazlacan/Systems/Corruption/Sun.h"
 #include "Weapon.generated.h"
 
 UCLASS()
@@ -21,8 +22,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<UBoxComponent> CollisionBox;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Corruption", meta = (ClampMin = "0.0", ClampMax = "1.0"))
 	float CorruptionIntensity = 0;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Corruption")
+	ESun DominantSun;
 
 private:
 	TSet<TWeakObjectPtr<AActor>> IgnoredActors = {};
@@ -33,12 +37,21 @@ private:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	static AWeapon* Spawn(const FWeaponData& WeaponData, const FTransform& SpawnPosition, APawn* NewOwner);
-	static AWeapon* Spawn(const FWeaponData& WeaponData, const FTransform& SpawnPosition, UWorld* World);
+	static AWeapon* Spawn(
+		const FWeaponData& WeaponData, const float Corruption, const ESun Sun,
+		const FTransform& SpawnPosition, APawn* NewOwner
+	);
+
+	static AWeapon* Spawn(
+		const FWeaponData& WeaponData, const float Corruption, const ESun Sun,
+		const FTransform& SpawnPosition, UWorld* World
+	);
 
 	AWeapon();
 
 	FWeaponData GetWeaponData() const { return WeaponDataTable; }
+	float GetCorruptionIntensity() const { return CorruptionIntensity; }
+	ESun GetDominantSun() const { return DominantSun; }
 
 	void StartCollisionDetection(AActor* Attacker, const FGameplayEffectSpecHandle& EffectToApplyOnHit);
 	void StopCollisionDetection() const;
@@ -58,5 +71,11 @@ protected:
 	);
 
 private:
-	static AWeapon* InternalSpawn(AWeapon* SpawnedWeapon, const FWeaponData& WeaponData, const FTransform& SpawnPosition);
+	static AWeapon* InternalSpawn(
+		AWeapon* SpawnedWeapon,
+		const FWeaponData& WeaponData,
+		const float CorruptionIntensity,
+		const ESun DominantSun,
+		const FTransform& SpawnPosition
+	);
 };

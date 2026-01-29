@@ -67,7 +67,10 @@ public:
         return State->GetEquippedWeapon(HandIndex);
     }
 
+    UFUNCTION(BlueprintCallable, Category = "Corruption")
     virtual ESun GetDominantSun() const override { return State->GetDominantSun(); }
+
+    UFUNCTION(BlueprintCallable, Category = "Corruption")
     virtual float GetCorruptionPercent() const override { return State->GetCorruptionPercent(); }
 
     virtual float GetExperienceDroppedOnDeath() const override { return ExperienceDroppedOnDeath; }

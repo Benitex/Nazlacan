@@ -21,19 +21,19 @@ class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySyst
 	UPROPERTY() TObjectPtr<const UPlayerCharacterAttributeSet> PlayerAttributeSet;
 	UPROPERTY() TObjectPtr<const UAbilitiesAttributeSet> AbilityAttributeSet;
 
-	UPROPERTY(EditAnywhere, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
 	TArray<TSubclassOf<UGameplayEffect>> DefaultEffects;
 
-	UPROPERTY(EditAnywhere, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
 
-	UPROPERTY(EditAnywhere, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
 	TArray<TSubclassOf<UGameplayAbility>> Attacks;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayEffect> ExperienceGrantEffect;
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, Category = "Corruption")
 	float StartingWeaponsCorruption;
 
 public:
@@ -47,7 +47,7 @@ public:
 	int32 Experience = 0;
 
 protected:
-	UPROPERTY(VisibleInstanceOnly)
+	UPROPERTY(VisibleInstanceOnly, Category = "Combat")
 	AWeapon* EquippedWeapons[2];
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "Combat")
@@ -63,7 +63,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	ECombatStyle GetCombatStyle() const { return CombatStyle; }
 
-	UFUNCTION(BLueprintCallable)
+	UFUNCTION(BLueprintCallable, Category = "Abilities")
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {
 		return AbilitySystemComponent;
 	}
@@ -78,7 +78,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	AWeapon* GetEquippedWeapon(const uint8 HandIndex) const { return EquippedWeapons[HandIndex]; }
 
+	UFUNCTION(BlueprintCallable, Category = "Corruption")
 	ESun GetDominantSun() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Corruption")
 	float GetCorruptionPercent() const;
 
 	TSubclassOf<UGameplayEffect> GetExperienceGrantEffect() const { return ExperienceGrantEffect; }

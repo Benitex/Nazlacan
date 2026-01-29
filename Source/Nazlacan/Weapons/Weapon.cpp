@@ -86,7 +86,7 @@ void AWeapon::StartCollisionDetection(AActor* Attacker, const FGameplayEffectSpe
 	IgnoredActors = {Attacker};
 	HitActors.Empty();
 	EffectToApply = EffectToApplyOnHit;
-	CollisionBox->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	CollisionBox->SetCollisionProfileName(TEXT("WeaponAttack"));
 }
 
 void AWeapon::StopCollisionDetection() const {

@@ -12,5 +12,6 @@ ESun GetSunWeakness(ESun Sun) {
     const UEnum* SunEnum = StaticEnum<ESun>();
     uint8 Weakness = static_cast<uint8>(Sun) + 1;
     Weakness %= SunEnum->NumEnums() - 2;
+    if (Weakness == 0) Weakness = 1;
     return static_cast<ESun>(Weakness);
 }

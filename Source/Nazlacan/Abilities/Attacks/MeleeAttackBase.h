@@ -25,6 +25,9 @@ protected:
 	float SpeedModifier = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	bool ShouldApplyElementalDamage = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	bool UsesRightHandWeapon = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	bool UsesLeftHandWeapon = false;
@@ -41,9 +44,6 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	virtual bool ShouldMoveDuringAttack() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Attack")
-	virtual bool ShouldEndAttackEarly() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	virtual void RemoveLastAttackTag() const;

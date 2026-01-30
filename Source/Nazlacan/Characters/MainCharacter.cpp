@@ -58,6 +58,8 @@ void AMainCharacter::ActivateAbilityWithTag(const FGameplayTag& Tag) const {
 void AMainCharacter::PrepareAttackWithTag(const FGameplayTag& Tag) {
 	if (IsAttacking()) {
 		NextAttack = Tag;
+		static const FGameplayTag AttackReadyTag = FGameplayTag::RequestGameplayTag(FName("Event.Attack.NextAttackReady"));
+		GetAbilitySystemComponent()->AddLooseGameplayTag(AttackReadyTag);
 	} else {
 		LastAttack = Tag;
 		ActivateAbilityWithTag(Tag);

@@ -56,14 +56,10 @@ bool UMeleeAttackBase::ShouldMoveDuringAttack() const {
     return true;
 }
 
-bool UMeleeAttackBase::ShouldEndAttackEarly() const {
-    const AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get());
-    if (!MainCharacter) return false;
-    return MainCharacter->IsNextAttackPrepared();
-}
-
 void UMeleeAttackBase::RemoveLastAttackTag() const {
     if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get())) {
         MainCharacter->RemoveLastAttack(GetAssetTags());
+        static const FGameplayTag AttackReadyTag = FGameplayTag::RequestGameplayTag(FName("Event.Attack.NextAttackReady"));
+        MainCharacter->GetAbilitySystemComponent()->RemoveLooseGameplayTag(AttackReadyTag);
     }
 }

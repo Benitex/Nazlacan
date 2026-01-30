@@ -42,8 +42,13 @@ AWeapon* AWeapon::InternalSpawn(
 	const FTransform& SpawnPosition
 ) {
 	SpawnedWeapon->WeaponDataTable = WeaponData;
-	SpawnedWeapon->CorruptionIntensity = CorruptionIntensity;
+
 	SpawnedWeapon->DominantSun = DominantSun;
+	if (SpawnedWeapon->WeaponDataTable.DefaultSun != ESun::None) {
+		SpawnedWeapon->DominantSun = SpawnedWeapon->WeaponDataTable.DefaultSun;
+	}
+
+	SpawnedWeapon->CorruptionIntensity = CorruptionIntensity;
 	SpawnedWeapon->FinishSpawning(SpawnPosition);
 	return SpawnedWeapon;
 }

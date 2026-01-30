@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "Nazlacan/Systems/Corruption/Sun.h"
 #include "WeaponData.generated.h"
 
 UENUM(BlueprintType)
@@ -31,4 +32,7 @@ struct NAZLACAN_API FWeaponData : public FTableRowBase {
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float CriticalMultiplier = 1;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    ESun DefaultSun = ESun::None;
 };

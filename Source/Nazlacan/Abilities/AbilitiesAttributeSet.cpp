@@ -17,7 +17,7 @@ void UAbilitiesAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
 
 void UAbilitiesAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-    DOREPLIFETIME_CONDITION_NOTIFY(UAbilitiesAttributeSet, SprintSpeed, COND_OwnerOnly, REPNOTIFY_OnChanged);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAbilitiesAttributeSet, SprintSpeed, COND_None, REPNOTIFY_OnChanged);
 }
 
 void UAbilitiesAttributeSet::OnRep_MovementSpeed(const FGameplayAttributeData& OldMovementSpeed) {

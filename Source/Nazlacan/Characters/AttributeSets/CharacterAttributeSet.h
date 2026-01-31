@@ -9,7 +9,7 @@ UCLASS()
 class NAZLACAN_API UCharacterAttributeSet : public UAttributeSet {
 	GENERATED_BODY()
 
-protected:
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attribute", ReplicatedUsing = OnRep_MaxHealth)
 	FGameplayAttributeData MaxHealth;
 

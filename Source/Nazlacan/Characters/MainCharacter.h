@@ -20,6 +20,9 @@ class NAZLACAN_API AMainCharacter : public ACharacter, public IBaseCharacter, pu
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UCameraComponent> FollowCamera;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta = (ClampMin = 0, ClampMax = 1, AllowPrivateAccess = "true"))
+    float CriticalChance;
+
     UPROPERTY(EditDefaultsOnly)
     TMap<ECombatStyle, UAnimMontage*> HitReactMontages;
     UPROPERTY(EditDefaultsOnly)
@@ -66,6 +69,8 @@ public:
     virtual AWeapon* GetEquippedWeapon(const uint8 HandIndex = ACustomPlayerState::RightHandIndex) const override {
         return State->GetEquippedWeapon(HandIndex);
     }
+
+    virtual float GetDefaultCriticalChance() const override { return CriticalChance; }
 
     UFUNCTION(BlueprintCallable, Category = "Corruption")
     virtual ESun GetDominantSun() const override { return State->GetDominantSun(); }

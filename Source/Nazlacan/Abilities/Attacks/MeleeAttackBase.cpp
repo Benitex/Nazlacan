@@ -23,12 +23,24 @@ void UMeleeAttackBase::StartHitDetection() const {
 }
 
 FGameplayEffectSpecHandle UMeleeAttackBase::GetEffectSpecHandle(const uint8 ForHand) const {
-    float WeaponDamage = Character->GetEquippedWeapon(ForHand)->GetWeaponData().BaseDamage;
-    WeaponDamage *= MotionValue;
-
-    static const FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Data.Damage"));
     const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(EffectToApplyOnHit, GetAbilityLevel());
-    SpecHandle.Data.Get()->SetSetByCallerMagnitude(DamageTag, -WeaponDamage);
+    FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
+
+    AWeapon* EquippedWeapon = Character->GetEquippedWeapon(ForHand);
+    Spec->GetContext().AddInstigator(GetAvatarActorFromActorInfo(), EquippedWeapon ? EquippedWeapon : GetAvatarActorFromActorInfo());
+
+    float WeaponDamage = EquippedWeapon->GetWeaponData().BaseDamage;
+    WeaponDamage *= MotionValue;
+    static const FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Data.Damage"));
+    Spec->SetSetByCallerMagnitude(DamageTag, WeaponDamage);
+
+    ESun Sun = ESun::None;
+    if (ShouldApplyElementalDamage) Sun = EquippedWeapon->GetDominantSun();
+    static const FGameplayTag SunTag = FGameplayTag::RequestGameplayTag(FName("Data.Sun"));
+    Spec->SetSetByCallerMagnitude(SunTag, static_cast<float>(Sun));
+
+    static const FGameplayTag CriticalTag = FGameplayTag::RequestGameplayTag(FName("Data.CriticalMultiplier"));
+    Spec->SetSetByCallerMagnitude(CriticalTag, EquippedWeapon->GetWeaponData().CriticalMultiplier);
 
     return SpecHandle;
 }
@@ -59,7 +71,10 @@ bool UMeleeAttackBase::ShouldMoveDuringAttack() const {
 void UMeleeAttackBase::RemoveLastAttackTag() const {
     if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get())) {
         MainCharacter->RemoveLastAttack(GetAssetTags());
+
         static const FGameplayTag AttackReadyTag = FGameplayTag::RequestGameplayTag(FName("Event.Attack.NextAttackReady"));
-        MainCharacter->GetAbilitySystemComponent()->RemoveLooseGameplayTag(AttackReadyTag);
+        if (MainCharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(AttackReadyTag)) {
+            MainCharacter->GetAbilitySystemComponent()->RemoveLooseGameplayTag(AttackReadyTag);
+        }
     }
 }

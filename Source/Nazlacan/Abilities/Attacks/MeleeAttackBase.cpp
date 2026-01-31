@@ -71,10 +71,5 @@ bool UMeleeAttackBase::ShouldMoveDuringAttack() const {
 void UMeleeAttackBase::RemoveLastAttackTag() const {
     if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get())) {
         MainCharacter->RemoveLastAttack(GetAssetTags());
-
-        static const FGameplayTag AttackReadyTag = FGameplayTag::RequestGameplayTag(FName("Event.Attack.NextAttackReady"));
-        if (MainCharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(AttackReadyTag)) {
-            MainCharacter->GetAbilitySystemComponent()->RemoveLooseGameplayTag(AttackReadyTag);
-        }
     }
 }

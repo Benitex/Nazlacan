@@ -51,6 +51,14 @@ void AMainCharacter::OnRep_PlayerState() {
 	GetAbilitySystemComponent()->InitAbilityActorInfo(State.Get(), this);
 }
 
+void AMainCharacter::ActivateEventToSelf(const FGameplayTag& Tag) const {
+	FGameplayEventData Data;
+	Data.EventTag = Tag;
+	Data.Instigator = this;
+	Data.Target = this;
+	GetAbilitySystemComponent()->HandleGameplayEvent(Tag, &Data);
+}
+
 void AMainCharacter::ActivateAbilityWithTag(const FGameplayTag& Tag) const {
 	GetAbilitySystemComponent()->TryActivateAbilitiesByTag(FGameplayTagContainer(Tag));
 }
@@ -59,7 +67,7 @@ void AMainCharacter::PrepareAttackWithTag(const FGameplayTag& Tag) {
 	if (IsAttacking()) {
 		NextAttack = Tag;
 		static const FGameplayTag AttackReadyTag = FGameplayTag::RequestGameplayTag(FName("Event.Attack.NextAttackReady"));
-		GetAbilitySystemComponent()->AddLooseGameplayTag(AttackReadyTag);
+		ActivateEventToSelf(AttackReadyTag);
 	} else {
 		LastAttack = Tag;
 		ActivateAbilityWithTag(Tag);

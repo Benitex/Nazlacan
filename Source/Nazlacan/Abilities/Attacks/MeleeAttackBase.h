@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	bool UsesLeftHandWeapon = false;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "Attack")
+	bool ShouldContinueCombo = false;
+
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	virtual void TryToActivateNextAttack();

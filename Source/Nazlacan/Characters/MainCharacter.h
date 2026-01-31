@@ -96,6 +96,9 @@ public:
     }
 
     UFUNCTION(BlueprintCallable)
+    void ActivateEventToSelf(const FGameplayTag& Tag) const;
+
+    UFUNCTION(BlueprintCallable)
     void ActivateAbilityWithTag(const FGameplayTag& Tag) const;
 
     UFUNCTION(BlueprintCallable)

@@ -8,14 +8,14 @@ void UMeleeAttackBase::TryToActivateNextAttack() {
 }
 
 void UMeleeAttackBase::StartHitDetection() const {
-    if (!ensure(UsesRightHandWeapon || UsesLeftHandWeapon)) return;
+    if (!ensure(bUsesRightHandWeapon || bUsesLeftHandWeapon)) return;
 
-    if (UsesRightHandWeapon) {
+    if (bUsesRightHandWeapon) {
         const FGameplayEffectSpecHandle SpecHandle = GetEffectSpecHandle(ACustomPlayerState::RightHandIndex);
         AWeapon* Weapon = Character->GetEquippedWeapon(ACustomPlayerState::RightHandIndex);
         Weapon->StartCollisionDetection(GetAvatarActorFromActorInfo(), SpecHandle);
     }
-    if (UsesLeftHandWeapon) {
+    if (bUsesLeftHandWeapon) {
         const FGameplayEffectSpecHandle SpecHandle = GetEffectSpecHandle(ACustomPlayerState::LeftHandIndex);
         AWeapon* Weapon = Character->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex);
         Weapon->StartCollisionDetection(GetAvatarActorFromActorInfo(), SpecHandle);
@@ -35,7 +35,7 @@ FGameplayEffectSpecHandle UMeleeAttackBase::GetEffectSpecHandle(const uint8 ForH
     Spec->SetSetByCallerMagnitude(DamageTag, WeaponDamage);
 
     ESun Sun = ESun::None;
-    if (ShouldApplyElementalDamage) Sun = EquippedWeapon->GetDominantSun();
+    if (bShouldApplyElementalDamage) Sun = EquippedWeapon->GetDominantSun();
     static const FGameplayTag SunTag = FGameplayTag::RequestGameplayTag(FName("Data.Sun"));
     Spec->SetSetByCallerMagnitude(SunTag, static_cast<float>(Sun));
 
@@ -48,11 +48,11 @@ FGameplayEffectSpecHandle UMeleeAttackBase::GetEffectSpecHandle(const uint8 ForH
 void UMeleeAttackBase::StopHitDetection() const {
     if (!Character.IsValid()) return;
 
-    if (UsesRightHandWeapon) {
+    if (bUsesRightHandWeapon) {
         const AWeapon* Weapon = Character->GetEquippedWeapon(ACustomPlayerState::RightHandIndex);
         Weapon->StopCollisionDetection();
     }
-    if (UsesLeftHandWeapon) {
+    if (bUsesLeftHandWeapon) {
         const AWeapon* Weapon = Character->GetEquippedWeapon(ACustomPlayerState::LeftHandIndex);
         Weapon->StopCollisionDetection();
     }

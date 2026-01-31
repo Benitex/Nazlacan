@@ -25,15 +25,15 @@ protected:
 	float SpeedModifier = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	bool ShouldApplyElementalDamage = false;
+	bool bShouldApplyElementalDamage = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	bool UsesRightHandWeapon = true;
+	bool bUsesRightHandWeapon = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	bool UsesLeftHandWeapon = false;
+	bool bUsesLeftHandWeapon = false;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "Attack")
-	bool ShouldContinueCombo = false;
+	bool bShouldContinueCombo = false;
 
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Attack")

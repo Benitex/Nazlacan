@@ -37,9 +37,6 @@ class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySyst
 	float StartingWeaponsCorruption;
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category = "Combat")
-	FDataTableRowHandle StartingWeapons[2];
-
 	static constexpr uint8 RightHandIndex = 0;
 	static constexpr uint8 LeftHandIndex = 1;
 
@@ -47,6 +44,9 @@ public:
 	int32 Experience = 0;
 
 protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	FDataTableRowHandle StartingWeapons[2];
+
 	UPROPERTY(VisibleInstanceOnly, Category = "Combat")
 	AWeapon* EquippedWeapons[2];
 
@@ -85,6 +85,9 @@ public:
 	float GetCorruptionPercent() const;
 
 	TSubclassOf<UGameplayEffect> GetExperienceGrantEffect() const { return ExperienceGrantEffect; }
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	bool HasFullHealth() const { return CharacterAttributeSet->GetHealth() >= CharacterAttributeSet->GetMaxHealth(); }
 
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Combat")

@@ -23,6 +23,9 @@ class NAZLACAN_API AMainCharacter : public ACharacter, public IBaseCharacter, pu
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta = (ClampMin = 0, ClampMax = 1, AllowPrivateAccess = "true"))
     float CriticalChance;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta = (ClampMin = 0, AllowPrivateAccess = "true"))
+    float HealingPower;
+
     UPROPERTY(EditDefaultsOnly)
     TMap<ECombatStyle, UAnimMontage*> HitReactMontages;
     UPROPERTY(EditDefaultsOnly)
@@ -71,6 +74,7 @@ public:
     }
 
     virtual float GetDefaultCriticalChance() const override { return CriticalChance; }
+    float GetDefaultHealingPower() const { return HealingPower; }
 
     UFUNCTION(BlueprintCallable, Category = "Corruption")
     virtual ESun GetDominantSun() const override { return State->GetDominantSun(); }

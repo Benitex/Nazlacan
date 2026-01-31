@@ -53,7 +53,9 @@ void ACustomPlayerController::SetupInputComponent() {
     Input->BindAction(Attack1Input, ETriggerEvent::Started, this, &ACustomPlayerController::OnAttackButtonPressed, 1);
     Input->BindAction(Attack2Input, ETriggerEvent::Started, this, &ACustomPlayerController::OnAttackButtonPressed, 2);
     Input->BindAction(Attack3Input, ETriggerEvent::Started, this, &ACustomPlayerController::OnAttackButtonPressed, 3);
+
     Input->BindAction(DodgeInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnDodgePressed);
+    Input->BindAction(ConsumeSkullInput, ETriggerEvent::Started, this, &ACustomPlayerController::OnConsumeSkullPressed);
 }
 
 void ACustomPlayerController::OnLookInput(const FInputActionValue& Value) {
@@ -148,5 +150,13 @@ void ACustomPlayerController::OnDodgePressed() {
     if (!IsValid(PlayerCharacter) || PlayerCharacter->IsFalling()) return;
 
 	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("Ability.Active.Roll"));
+    PlayerCharacter->ActivateAbilityWithTag(Tag);
+}
+
+void ACustomPlayerController::OnConsumeSkullPressed() {
+    const AMainCharacter* PlayerCharacter = ControlledCharacter.Get();
+    if (!IsValid(PlayerCharacter) || PlayerCharacter->IsFalling()) return;
+
+    static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("Ability.Active.ConsumeSkull"));
     PlayerCharacter->ActivateAbilityWithTag(Tag);
 }

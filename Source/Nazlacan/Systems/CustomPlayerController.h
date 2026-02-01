@@ -30,6 +30,9 @@ class NAZLACAN_API ACustomPlayerController : public APlayerController {
 	TObjectPtr<UInputAction> SprintInput;
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> ConsumeSkullInput;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> DodgeInput;
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -62,6 +65,7 @@ private:
 	void OnSprintPressed();
 	void OnSprintReleased();
 	void OnDodgePressed();
+	void OnConsumeSkullPressed();
 	void OnAttackButtonPressed(const FInputActionValue& Value, int ButtonNumber);
 
 	UFUNCTION(BlueprintCallable, Category = "Controller")

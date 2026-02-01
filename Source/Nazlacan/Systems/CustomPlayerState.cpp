@@ -13,16 +13,28 @@ ACustomPlayerState::ACustomPlayerState() {
     CharacterAttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
     PlayerAttributeSet = CreateDefaultSubobject<UPlayerCharacterAttributeSet>(TEXT("PlayerAttributeSet"));
     AbilityAttributeSet = CreateDefaultSubobject<UAbilitiesAttributeSet>(TEXT("AbilityAttributeSet"));
-
-    EquippedWeapons[RightHandIndex] = nullptr;
-    EquippedWeapons[LeftHandIndex] = nullptr;
 }
 
-void ACustomPlayerState::SetDefaultAbilitiesAndEffects() {
+void ACustomPlayerState::LoadAbilitiesAndEffects() {
     if (GetLocalRole() != ROLE_Authority) return;
 
-    EquipStartingWeapons();
+    if (!bLoadedDefaultAttributes) {
+        EquipStartingWeapons();
+        LoadDefaultEffectsAndAttributes();
+        bLoadedDefaultAttributes = true;
+    } else {
+        // Attach weapons to the mesh
+        EquipWeapons(EquippedWeapons[RightHandIndex], EquippedWeapons[LeftHandIndex]);
+    }
 
+    // Reset attributes
+    FGameplayEffectContextHandle Context = AbilitySystemComponent->MakeEffectContext();
+    Context.AddSourceObject(this);
+    const FGameplayEffectSpecHandle Spec = AbilitySystemComponent->MakeOutgoingSpec(SetAttributesOnRespawnEffect, 1, Context);
+    AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+}
+
+void ACustomPlayerState::LoadDefaultEffectsAndAttributes() {
     FGameplayEffectContextHandle Context = AbilitySystemComponent->MakeEffectContext();
     Context.AddSourceObject(this);
 
@@ -96,7 +108,7 @@ void ACustomPlayerState::EquipWeapon(AWeapon* Weapon, const uint8 HandIndex) {
 
     const FName SocketName = HandIndex == RightHandIndex ? MainCharacter->GetRightHandSocketName() : MainCharacter->GetLeftHandSocketName();
 
-    RemoveWeapon(HandIndex);
+    if (Weapon != EquippedWeapons[HandIndex]) RemoveWeapon(HandIndex);
     Weapon->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetIncludingScale, SocketName);
     EquippedWeapons[HandIndex] = Weapon;
 }

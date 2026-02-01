@@ -103,7 +103,7 @@ public:
     void ActivateEventToSelf(const FGameplayTag& Tag) const;
 
     UFUNCTION(BlueprintCallable)
-    void ActivateAbilityWithTag(const FGameplayTag& Tag) const;
+    bool ActivateAbilityWithTag(const FGameplayTag& Tag) const;
 
     UFUNCTION(BlueprintCallable)
     void PrepareAttackWithTag(const FGameplayTag& Tag);
@@ -111,7 +111,7 @@ public:
     bool IsNextAttackPrepared() const { return NextAttack != FGameplayTag::EmptyTag; }
 
     void RemoveLastAttack(FGameplayTagContainer TagFilter = FGameplayTagContainer());
-    FGameplayTag GetLastAttack() const { return LastAttack; } 
+    FGameplayTag GetLastAttack() const { return LastAttack; }
 
     UFUNCTION(BlueprintCallable) bool IsAttacking() const;
     UFUNCTION(BlueprintCallable) bool CanMove() const;

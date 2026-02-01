@@ -30,6 +30,9 @@ class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySyst
 	UPROPERTY(EditAnywhere, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
 	TArray<TSubclassOf<UGameplayAbility>> Attacks;
 
+	UPROPERTY(EditAnywhere, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UGameplayEffect> SetAttributesOnRespawnEffect;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayEffect> ExperienceGrantEffect;
 
@@ -48,17 +51,20 @@ protected:
 	FDataTableRowHandle StartingWeapons[2];
 
 	UPROPERTY(VisibleInstanceOnly, Category = "Combat")
-	AWeapon* EquippedWeapons[2];
+	AWeapon* EquippedWeapons[2] = { nullptr, nullptr };
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "Combat")
 	ECombatStyle CombatStyle = ECombatStyle::SwordAndSorcery;
+
+private:
+	bool bLoadedDefaultAttributes = false;
 
 public:
 	ACustomPlayerState();
 
 	// Only callable on server
-	UFUNCTION(BlueprintCallable)
-	void SetDefaultAbilitiesAndEffects();
+	void LoadAbilitiesAndEffects();
+	void LoadDefaultEffectsAndAttributes();
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	ECombatStyle GetCombatStyle() const { return CombatStyle; }

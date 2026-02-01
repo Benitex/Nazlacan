@@ -70,6 +70,6 @@ bool UMeleeAttackBase::ShouldMoveDuringAttack() const {
 
 void UMeleeAttackBase::RemoveLastAttackTag() const {
     if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get())) {
-        MainCharacter->RemoveLastAttack(GetAssetTags());
+        MainCharacter->RemoveLastAttack();
     }
 }

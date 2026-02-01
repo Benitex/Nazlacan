@@ -42,7 +42,7 @@ void AMainCharacter::PossessedBy(AController* NewController) {
 	State = GetPlayerState<ACustomPlayerState>();
 	GetAbilitySystemComponent()->InitAbilityActorInfo(State.Get(), this);
 
-	State->SetDefaultAbilitiesAndEffects();
+	State->LoadAbilitiesAndEffects();
 }
 
 void AMainCharacter::OnRep_PlayerState() {
@@ -59,8 +59,8 @@ void AMainCharacter::ActivateEventToSelf(const FGameplayTag& Tag) const {
 	GetAbilitySystemComponent()->HandleGameplayEvent(Tag, &Data);
 }
 
-void AMainCharacter::ActivateAbilityWithTag(const FGameplayTag& Tag) const {
-	GetAbilitySystemComponent()->TryActivateAbilitiesByTag(FGameplayTagContainer(Tag));
+bool AMainCharacter::ActivateAbilityWithTag(const FGameplayTag& Tag) const {
+	return GetAbilitySystemComponent()->TryActivateAbilitiesByTag(FGameplayTagContainer(Tag));
 }
 
 void AMainCharacter::PrepareAttackWithTag(const FGameplayTag& Tag) {
@@ -69,16 +69,24 @@ void AMainCharacter::PrepareAttackWithTag(const FGameplayTag& Tag) {
 		static const FGameplayTag AttackReadyTag = FGameplayTag::RequestGameplayTag(FName("Event.Attack.NextAttackReady"));
 		ActivateEventToSelf(AttackReadyTag);
 	} else {
-		LastAttack = Tag;
-		ActivateAbilityWithTag(Tag);
+		if (ActivateAbilityWithTag(Tag)) {
+			LastAttack = Tag;
+		} else {
+			LastAttack = FGameplayTag::EmptyTag;
+			NextAttack = FGameplayTag::EmptyTag;
+		}
 	}
 }
 
 void AMainCharacter::TryToActivateNextAttack() {
 	if (NextAttack == FGameplayTag::EmptyTag) return;
-	LastAttack = NextAttack;
-	ActivateAbilityWithTag(NextAttack);
-	NextAttack = FGameplayTag::EmptyTag;
+	if (ActivateAbilityWithTag(NextAttack)) {
+		LastAttack = NextAttack;
+		NextAttack = FGameplayTag::EmptyTag;
+	} else {
+		LastAttack = FGameplayTag::EmptyTag;
+		NextAttack = FGameplayTag::EmptyTag;
+	}
 }
 
 // ReSharper disable once CppPassValueParameterByConstReference

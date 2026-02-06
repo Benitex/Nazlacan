@@ -15,6 +15,11 @@ class NAZLACAN_API ACustomGameState : public AGameStateBase {
 	UPROPERTY(EditDefaultsOnly, Category = "Corruption")
 	float CorruptionAccelerationRate;
 
+	FRandomStream RandomStream;
+
 public:
 	float GetWorldCorruption() const { return WorldCorruption; }
+
+	UFUNCTION(BlueprintCallable)
+	FRandomStream& GetRandomStream() { return RandomStream; }
 };

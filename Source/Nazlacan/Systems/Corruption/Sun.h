@@ -6,10 +6,11 @@
 UENUM(BlueprintType)
 enum class ESun : uint8 {
     None = 0,
+
     Tezca = 1,
     Quetza = 2,
-    Tlaloc = 3,
-    Chal = 4,
+    Huitzloc = 3,
+    ChalTotec = 4,
 };
 
 ESun GetRandomSun();

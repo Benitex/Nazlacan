@@ -2,7 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "Nazlacan/Level/Biome.h"
+#include "Nazlacan/Level/CardinalDirections.h"
 #include "CustomGameState.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameSeedReady);
 
 UCLASS()
 class NAZLACAN_API ACustomGameState : public AGameStateBase {
@@ -15,11 +19,24 @@ class NAZLACAN_API ACustomGameState : public AGameStateBase {
 	UPROPERTY(EditDefaultsOnly, Category = "Corruption")
 	float CorruptionAccelerationRate;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnGameSeedReady OnGameSeedReady;
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Biomes")
+	TMap<ECardinalDirections, TObjectPtr<UBiome>> Biomes = {};
+
+	UPROPERTY(BlueprintReadWrite)
 	FRandomStream RandomStream;
 
 public:
 	float GetWorldCorruption() const { return WorldCorruption; }
 
 	UFUNCTION(BlueprintCallable)
-	FRandomStream& GetRandomStream() { return RandomStream; }
+	void SetBiomeForDirection(UBiome* Biome, const ECardinalDirections Direction) {
+		Biomes.Add(Direction, Biome);
+	}
+
+protected:
+	virtual void BeginPlay() override;
 };

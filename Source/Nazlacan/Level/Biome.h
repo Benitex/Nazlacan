@@ -19,11 +19,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain")
 	float MountainsDensity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain", meta = (ClampMin = "1.0"))
 	int NoiseLayersCount = 3;
 
 	// The reduction of amplitude applied to each successive layer of noise.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain", meta = (ClampMin = "1.0"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain")
 	float MountainsReductionDivisor = 2;
 
 	// The factor by which to multiply the base density of mountains in each layer of noise.

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BiomeMaterialSettings.h"
 #include "GameplayEffect.h"
 #include "Nazlacan/Systems/Corruption/Sun.h"
 #include "Biome.generated.h"
@@ -30,13 +31,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain")
 	float MountainsDensityFactor = 2;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Terrain")
+	TObjectPtr<UBiomeMaterialSettings> MaterialSettings;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Corruption")
 	ESun DominantSun = ESun::None;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Biome")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PCG Biome Core")
 	TObjectPtr<UPrimaryDataAsset> BiomeDefinition;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Biome")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PCG Biome Core")
     TObjectPtr<UPrimaryDataAsset> BiomeTemplate;
 
     // TODO pcg graph

@@ -20,10 +20,10 @@ public:
 	TObjectPtr<UTexture2D> GrassOcclusionRoughnessMetallicMap;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grass")
-	FColor GrassTint = FColor::White;
+	FLinearColor GrassTint = FColor::White;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grass")
-	float GrassTextureSize = 64;
+	float GrassTextureSize = 2000;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grass")
 	float GrassTextureDistanceFactor = 4;
@@ -40,8 +40,20 @@ public:
 	TObjectPtr<UTexture2D> RockOcclusionRoughnessMetallicMap;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rock")
-	float RockTextureSize = 64;
+	FLinearColor RockTint = FColor::White;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rock")
+	float RockTextureSize = 2000;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rock")
 	float RockTextureDistanceFactor = 4;
+
+	// The "angle" to start creating rocks. Based on the normal of the surface.
+	// Negative values will create rocks on surfaces facing downwards, while positive values will create rocks on surfaces facing upwards.
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rock")
+    float RockBlendBias;
+
+	// Intensity of the transition between rocks and other textures
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rock")
+    float RockBlendSharpness;
 };

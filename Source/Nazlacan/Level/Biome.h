@@ -31,6 +31,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain")
 	float MountainsDensityFactor = 2;
 
+	// Applies an offset to the position of the terrain, which can be used to make it higher or lower by default.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Terrain")
+    float BiomeWorldHeight = 0;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Terrain")
 	TObjectPtr<UBiomeMaterialSettings> MaterialSettings;
 

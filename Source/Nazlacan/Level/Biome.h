@@ -12,44 +12,45 @@ class NAZLACAN_API UBiome : public UPrimaryDataAsset {
 
 public:
 	// Magnitude of the noise. Higher values result in taller mountains.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Terrain")
 	float MountainsHeight;
 
 	// Frequency of the noise. Lower values result in more spread-out mountains.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Terrain")
 	float MountainsDensity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain", meta = (ClampMin = "1.0"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Terrain", meta = (ClampMin = "1.0"))
 	int NoiseLayersCount = 3;
 
 	// The reduction of amplitude applied to each successive layer of noise.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Terrain")
 	float MountainsReductionDivisor = 2;
 
 	// The factor by which to multiply the base density of mountains in each layer of noise.
 	// Higher values result in more detailed rocks and cliffs.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Terrain")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Terrain")
 	float MountainsDensityFactor = 2;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Terrain")
+    float WaterHeightLevel = -20;
 
 	// Applies an offset to the position of the terrain, which can be used to make it higher or lower by default.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Terrain")
     float BiomeWorldHeight = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Terrain")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Terrain")
 	TObjectPtr<UBiomeMaterialSettings> MaterialSettings;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Corruption")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Corruption")
 	ESun DominantSun = ESun::None;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PCG Biome Core")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PCG Biome Core")
 	TObjectPtr<UPrimaryDataAsset> BiomeDefinition;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PCG Biome Core")
-    TObjectPtr<UPrimaryDataAsset> BiomeTemplate;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PCG Biome Core")
+    TArray<UPrimaryDataAsset*> BiomeAssets;
 
-    // TODO pcg graph
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayEffect>> EffectsToApply = {};
 
 	// TODO enemies list

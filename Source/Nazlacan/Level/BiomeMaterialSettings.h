@@ -56,4 +56,30 @@ public:
 	// Intensity of the transition between rocks and other textures
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rock")
     float RockBlendSharpness;
+
+	// Snow
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Snow")
+	TObjectPtr<UTexture2D> SnowColorMap;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Snow")
+	TObjectPtr<UTexture2D> SnowNormalMap;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Snow")
+	TObjectPtr<UTexture2D> SnowOcclusionRoughnessMetallicMap;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Snow")
+	FLinearColor SnowTint = FColor::White;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Snow")
+	float SnowTextureSize = 2000;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grass")
+	float SnowTextureDistanceFactor = 4;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Snow")
+	float SnowBlendHeight;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Snow")
+	float SnowBlendSharpness = 10000;
 };

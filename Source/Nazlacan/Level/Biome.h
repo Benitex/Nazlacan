@@ -44,14 +44,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Corruption")
 	ESun DominantSun = ESun::None;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Abilities")
+	TArray<TSubclassOf<UGameplayEffect>> EffectsToApply = {};
+
+	// TODO enemies list
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PCG Biome Core")
 	TObjectPtr<UPrimaryDataAsset> BiomeDefinition;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PCG Biome Core")
     TArray<UPrimaryDataAsset*> BiomeAssets;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Abilities")
-	TArray<TSubclassOf<UGameplayEffect>> EffectsToApply = {};
-
-	// TODO enemies list
 };

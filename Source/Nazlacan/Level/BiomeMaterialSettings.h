@@ -25,9 +25,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grass")
 	float GrassTextureSize = 2000;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grass")
-	float GrassTextureDistanceFactor = 4;
-
 	// Rock
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rock")
@@ -44,9 +41,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rock")
 	float RockTextureSize = 2000;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Rock")
-	float RockTextureDistanceFactor = 4;
 
 	// The "angle" to start creating rocks. Based on the normal of the surface.
 	// Negative values will create rocks on surfaces facing downwards, while positive values will create rocks on surfaces facing upwards.
@@ -73,9 +67,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Snow")
 	float SnowTextureSize = 2000;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Grass")
-	float SnowTextureDistanceFactor = 4;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Snow")
 	float SnowBlendHeight;

@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "BiomeMaterialSettings.h"
 #include "GameplayEffect.h"
+#include "NiagaraComponent.h"
 #include "Nazlacan/Systems/Corruption/Sun.h"
 #include "Biome.generated.h"
 
@@ -40,6 +41,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Terrain")
 	TObjectPtr<UBiomeMaterialSettings> MaterialSettings;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Effects")
+	TArray<UNiagaraSystem*> VisualEffects = {};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Corruption")
 	ESun DominantSun = ESun::None;

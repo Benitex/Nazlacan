@@ -28,6 +28,10 @@ Painted Macuahuitl - rowanhopkins98
 
 Stylized Orc Sword - Rustfang
 
+Light Foliage - MYTHRA TECH
+
+Quixel
+
 Paragon Assets - Epic Games:
 Sparrow,
 Countess,
@@ -39,3 +43,7 @@ Paragon Minions
 Paragon animations retargeted to Manny - Kingboars
 
 ### Music and Sound Effects
+
+Jimena Contreras
+
+Aztec Empire, Mayan Ritual, Moonlight in Mexico, Tales from Southern Mexico, The Sax of Ancient Terror

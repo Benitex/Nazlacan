@@ -5,6 +5,7 @@
 #include "BaseCharacter.h"
 #include "AbilitySystemInterface.h"
 #include "Camera/CameraComponent.h"
+#include "NavigationInvokerComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Nazlacan/Systems/CustomPlayerState.h"
@@ -19,6 +20,9 @@ class NAZLACAN_API AMainCharacter : public ACharacter, public IBaseCharacter, pu
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UCameraComponent> FollowCamera;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Navigation", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UNavigationInvokerComponent> NavigationInvoker;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta = (ClampMin = 0, ClampMax = 1, AllowPrivateAccess = "true"))
     float CriticalChance;

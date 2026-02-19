@@ -45,6 +45,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Effects")
 	TArray<UNiagaraSystem*> VisualEffects = {};
 
+	// TODO biome world settings
+    // TODO music
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Corruption")
 	ESun DominantSun = ESun::None;
 
@@ -52,7 +55,7 @@ public:
 	TArray<TSubclassOf<UGameplayEffect>> EffectsToApply = {};
 
 	// TODO enemies list
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PCG Biome Core")
 	TObjectPtr<UPrimaryDataAsset> BiomeDefinition;
 

@@ -14,6 +14,7 @@ public class Nazlacan : ModuleRules
 			"GameplayAbilities", "GameplayTags", "GameplayTasks",
 			"PCG",
 			"UMG", "Niagara",
+			"NavigationSystem",
 		]);
 
 		// Uncomment if you are using Slate UI

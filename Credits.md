@@ -30,7 +30,20 @@ Stylized Orc Sword - Rustfang
 
 Light Foliage - MYTHRA TECH
 
-Quixel
+Rock Environment Pack - PixelForgeESP
+
+Quixel:
+Black Alder,
+Snow clump,
+Snow pile,
+Dead shrubs,
+Icelandic sand with pebbles,
+Icelandic rock cliff,
+Snow,
+Uncut grass,
+Mossy grass,
+Lichened rock wall,
+Grass and rubble,
 
 Paragon Assets - Epic Games:
 Sparrow,

@@ -1,5 +1,5 @@
 #include "Die.h"
-#include "Nazlacan/Characters/MainCharacter.h"
+#include "Nazlacan/Characters/BaseCharacter.h"
 
 UAnimMontage* UDie::GetDeathMontage() const {
     AActor* Actor = GetAvatarActorFromActorInfo();

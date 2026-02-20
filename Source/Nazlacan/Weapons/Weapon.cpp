@@ -41,11 +41,11 @@ AWeapon* AWeapon::InternalSpawn(
 	const ESun DominantSun,
 	const FTransform& SpawnPosition
 ) {
-	SpawnedWeapon->WeaponDataTable = WeaponData;
+	SpawnedWeapon->Data = WeaponData;
 
 	SpawnedWeapon->DominantSun = DominantSun;
-	if (SpawnedWeapon->WeaponDataTable.DefaultSun != ESun::None) {
-		SpawnedWeapon->DominantSun = SpawnedWeapon->WeaponDataTable.DefaultSun;
+	if (SpawnedWeapon->Data.DefaultSun != ESun::None) {
+		SpawnedWeapon->DominantSun = SpawnedWeapon->Data.DefaultSun;
 	}
 
 	SpawnedWeapon->CorruptionIntensity = CorruptionIntensity;
@@ -69,11 +69,11 @@ AWeapon::AWeapon() {
 
 void AWeapon::BeginPlay() {
 	Super::BeginPlay();
-	if (!WeaponDataTable.WeaponMesh) {
-		UE_LOG(LogTemp, Warning, TEXT("WeaponDataTable does not have a valid WeaponMesh assigned."));
+	if (!Data.Mesh) {
+		UE_LOG(LogTemp, Warning, TEXT("WeaponDataTable does not have a valid Mesh assigned."));
 		return;
 	}
-	WeaponMesh->SetStaticMesh(WeaponDataTable.WeaponMesh);
+	WeaponMesh->SetStaticMesh(Data.Mesh);
 
 	FVector Min, Max;
 	WeaponMesh->GetLocalBounds(Min, Max);
@@ -90,7 +90,7 @@ void AWeapon::BeginPlay() {
 void AWeapon::StartCollisionDetection(AActor* Attacker, const FGameplayEffectSpecHandle& EffectToApplyOnHit) {
 	IgnoredActors = {Attacker};
 	HitActors.Empty();
-	EffectToApply = EffectToApplyOnHit;
+	EffectToApplyOnNextHit = EffectToApplyOnHit;
 	CollisionBox->SetCollisionProfileName(TEXT("WeaponAttack"));
 }
 
@@ -110,7 +110,7 @@ void AWeapon::OnOverlap(
 	const IAbilitySystemInterface* Target = Cast<IAbilitySystemInterface>(OtherActor);
 	if (!Target) return;
 	HitActors.Add(OtherActor);
-	if (!EffectToApply.IsValid()) return;
+	if (!EffectToApplyOnNextHit.IsValid()) return;
 
-	Target->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*EffectToApply.Data.Get());
+	Target->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*EffectToApplyOnNextHit.Data.Get());
 }

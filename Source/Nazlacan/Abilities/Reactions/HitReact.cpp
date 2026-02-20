@@ -1,5 +1,5 @@
 #include "HitReact.h"
-#include "Nazlacan/Characters/MainCharacter.h"
+#include "Nazlacan/Characters/BaseCharacter.h"
 
 UAnimMontage* UHitReact::GetHitMontage() const {
     AActor* Actor = GetAvatarActorFromActorInfo();

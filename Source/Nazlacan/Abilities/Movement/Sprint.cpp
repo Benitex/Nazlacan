@@ -1,7 +1,7 @@
 #include "Sprint.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Nazlacan/Macros.h"
-#include "Nazlacan/Characters/MainCharacter.h"
+#include "Nazlacan/Characters/PlayerCharacters/MainCharacter.h"
 
 void USprint::ResetMovementSpeed() const {
     const AMainCharacter* Character = Cast<AMainCharacter>(GetAvatarActorFromActorInfo());

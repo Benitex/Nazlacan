@@ -19,7 +19,7 @@ struct NAZLACAN_API FWeaponData : public FTableRowBase {
     GENERATED_USTRUCT_BODY()
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    UStaticMesh* WeaponMesh;
+    TObjectPtr<UStaticMesh> Mesh;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     EWeaponType WeaponType;

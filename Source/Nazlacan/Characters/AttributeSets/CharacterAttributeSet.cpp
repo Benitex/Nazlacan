@@ -1,6 +1,6 @@
 #include "CharacterAttributeSet.h"
 #include "GameplayEffectExtension.h"
-#include "Nazlacan/Characters/MainCharacter.h"
+#include "Nazlacan/Characters/PlayerCharacters/MainCharacter.h"
 #include "Net/UnrealNetwork.h"
 
 void UCharacterAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) {

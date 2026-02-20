@@ -1,6 +1,6 @@
 #include "BaseGameplayAbility.h"
 #include "Nazlacan/Macros.h"
-#include "Nazlacan/Characters/MainCharacter.h"
+#include "Nazlacan/Characters/PlayerCharacters/MainCharacter.h"
 
 UBaseGameplayAbility::UBaseGameplayAbility() {
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;

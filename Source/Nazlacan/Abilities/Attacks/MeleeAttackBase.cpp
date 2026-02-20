@@ -1,5 +1,5 @@
 #include "MeleeAttackBase.h"
-#include "Nazlacan/Characters/MainCharacter.h"
+#include "Nazlacan/Characters/PlayerCharacters/MainCharacter.h"
 
 void UMeleeAttackBase::TryToActivateNextAttack() {
     if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(Character.Get())) {

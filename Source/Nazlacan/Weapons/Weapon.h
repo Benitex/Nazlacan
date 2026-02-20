@@ -14,7 +14,7 @@ class NAZLACAN_API AWeapon : public AActor {
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	FWeaponData WeaponDataTable;
+	FWeaponData Data;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
 	TObjectPtr<UStaticMeshComponent> WeaponMesh;
@@ -31,7 +31,7 @@ protected:
 private:
 	TSet<TWeakObjectPtr<AActor>> IgnoredActors = {};
 	TSet<TWeakObjectPtr<AActor>> HitActors = {};
-	FGameplayEffectSpecHandle EffectToApply;
+	FGameplayEffectSpecHandle EffectToApplyOnNextHit;
 
 	static constexpr float CollisionBoxZPadding = 10;
 
@@ -49,7 +49,7 @@ public:
 
 	AWeapon();
 
-	FWeaponData GetWeaponData() const { return WeaponDataTable; }
+	FWeaponData GetWeaponData() const { return Data; }
 	float GetCorruptionIntensity() const { return CorruptionIntensity; }
 	ESun GetDominantSun() const { return DominantSun; }
 

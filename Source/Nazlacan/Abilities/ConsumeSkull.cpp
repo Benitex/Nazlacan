@@ -1,6 +1,6 @@
 #include "ConsumeSkull.h"
 #include "Nazlacan/Macros.h"
-#include "Nazlacan/Characters/MainCharacter.h"
+#include "Nazlacan/Characters/PlayerCharacters/MainCharacter.h"
 
 void UConsumeSkull::ConsumeSkull() const {
     AActor* Actor = GetAvatarActorFromActorInfo();

@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
 #include "GameFramework/PlayerController.h"
-#include "Nazlacan/Characters/MainCharacter.h"
+#include "Nazlacan/Characters/PlayerCharacters/MainCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "Nazlacan/Weapons/CombatStyleCombo.h"
 #include "CustomPlayerController.generated.h"

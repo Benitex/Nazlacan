@@ -1,7 +1,7 @@
 #include "CustomPlayerState.h"
 #include "AbilitySystemComponent.h"
 #include "Nazlacan/Macros.h"
-#include "Nazlacan/Characters/MainCharacter.h"
+#include "Nazlacan/Characters/PlayerCharacters/MainCharacter.h"
 #include "Nazlacan/Weapons/Weapon.h"
 #include "Nazlacan/Weapons/WeaponData.h"
 

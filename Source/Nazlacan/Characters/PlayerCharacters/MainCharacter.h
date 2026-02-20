@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "BaseCharacter.h"
+#include "Nazlacan/Characters/BaseCharacter.h"
 #include "AbilitySystemInterface.h"
 #include "Camera/CameraComponent.h"
 #include "NavigationInvokerComponent.h"

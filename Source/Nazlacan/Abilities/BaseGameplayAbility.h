@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "Nazlacan/Characters/MainCharacter.h"
+#include "Nazlacan/Characters/BaseCharacter.h"
 #include "BaseGameplayAbility.generated.h"
 
 UCLASS()

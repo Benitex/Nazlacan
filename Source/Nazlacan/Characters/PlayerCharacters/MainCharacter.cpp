@@ -1,11 +1,9 @@
 #include "MainCharacter.h"
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Nazlacan/Macros.h"
 #include "Nazlacan/Systems/CustomPlayerState.h"
 
 AMainCharacter::AMainCharacter() {
-	PrimaryActorTick.bCanEverTick = true;
     SetupCamera();
 }
 
@@ -24,19 +22,6 @@ void AMainCharacter::SetupCamera() {
 void AMainCharacter::PostInitializeComponents() {
 	Super::PostInitializeComponents();
 	DefaultMaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
-	LoadSockets();
-}
-
-void AMainCharacter::LoadSockets() {
-	const USkeletalMeshComponent* CharacterMesh = GetMesh();
-	returnIfNull(CharacterMesh);
-
-	const TStaticArray<FName, 2> SocketNames = { RightHandSocketName, LeftHandSocketName };
-	for (const FName SocketName : SocketNames) {
-		if (!CharacterMesh->DoesSocketExist(SocketName)) {
-			UE_LOG(LogTemp, Error, TEXT("Failed to find Socket %s. It does not exist on %s"), *SocketName.ToString(), *GetName());
-		}
-	}
 }
 
 void AMainCharacter::PossessedBy(AController* NewController) {
@@ -139,4 +124,14 @@ bool AMainCharacter::CanMove() const {
 bool AMainCharacter::IsAttacking() const {
 	static const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("State.Attacking"));
 	return GetAbilitySystemComponent()->HasMatchingGameplayTag(Tag);
+}
+
+void AMainCharacter::AttachEquipmentToMesh(const TScriptInterface<IEquipment>& Equipment, const EEquipmentSlot Slot) {
+	const FName* Socket = EquipmentSockets.Find(Slot);
+	if (!Socket) {
+		UE_LOG(LogTemp, Warning, TEXT("No socket found for equipment slot %d on character %s"), static_cast<uint8>(Slot), *GetName());
+		return;
+	}
+
+	Equipment.GetInterface()->AttachEquipment(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, *Socket);
 }

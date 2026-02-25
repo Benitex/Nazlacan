@@ -5,11 +5,12 @@
 #include "WeaponData.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "Nazlacan/Equipment/Equipment.h"
 #include "Nazlacan/Systems/Corruption/Sun.h"
 #include "Weapon.generated.h"
 
 UCLASS()
-class NAZLACAN_API AWeapon : public AActor {
+class NAZLACAN_API AWeapon : public AActor, public IEquipment {
 	GENERATED_BODY()
 
 protected:
@@ -56,6 +57,14 @@ public:
 	void StartCollisionDetection(AActor* Attacker, const FGameplayEffectSpecHandle& EffectToApplyOnHit);
 	void StopCollisionDetection() const;
 	TSet<TWeakObjectPtr<AActor>> GetHitActors() const { return HitActors; }
+
+	virtual bool DestroyEquipment(const bool bNetForce = false, const bool bShouldModifyLevel = true) override {
+		return Destroy(bNetForce, bShouldModifyLevel);
+	}
+
+	virtual bool AttachEquipment(USceneComponent* Parent, const FAttachmentTransformRules& AttachmentRules, const FName SocketName = NAME_None) override {
+		return AttachToComponent(Parent, AttachmentRules, SocketName);
+	}
 
 protected:
 	virtual void BeginPlay() override;

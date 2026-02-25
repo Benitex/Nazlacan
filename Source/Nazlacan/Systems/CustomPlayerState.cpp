@@ -13,6 +13,8 @@ ACustomPlayerState::ACustomPlayerState() {
     CharacterAttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
     PlayerAttributeSet = CreateDefaultSubobject<UPlayerCharacterAttributeSet>(TEXT("PlayerAttributeSet"));
     AbilityAttributeSet = CreateDefaultSubobject<UAbilitiesAttributeSet>(TEXT("AbilityAttributeSet"));
+
+    EquipmentManager = CreateDefaultSubobject<UEquipmentManagerComponent>(TEXT("EquipmentManager"));
 }
 
 void ACustomPlayerState::LoadAbilitiesAndEffects() {
@@ -23,8 +25,9 @@ void ACustomPlayerState::LoadAbilitiesAndEffects() {
         LoadDefaultEffectsAndAttributes();
         bLoadedDefaultAttributes = true;
     } else {
-        // Attach weapons to the mesh
-        EquipWeapons(EquippedWeapons[RightHandIndex], EquippedWeapons[LeftHandIndex]);
+        AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
+        MainCharacter->AttachEquipmentToMesh(EquipmentManager->GetEquippedWeapon(EEquipmentSlot::RightHand), EEquipmentSlot::RightHand);
+        MainCharacter->AttachEquipmentToMesh(EquipmentManager->GetEquippedWeapon(EEquipmentSlot::LeftHand), EEquipmentSlot::LeftHand);
     }
 
     // Reset attributes
@@ -52,98 +55,58 @@ void ACustomPlayerState::LoadDefaultEffectsAndAttributes() {
 }
 
 void ACustomPlayerState::EquipStartingWeapons() {
-    if (!IsValid(StartingWeapons[RightHandIndex].DataTable) || StartingWeapons[RightHandIndex].RowName == NAME_None) {
+    constexpr uint8 RightHand = 0;
+    constexpr uint8 LeftHand = 1;
+
+    if (!IsValid(StartingWeapons[RightHand].DataTable) || StartingWeapons[RightHand].RowName == NAME_None) {
+        UE_LOG(LogTemp, Warning, TEXT("Invalid starting weapons selected. Skipping weapon equip."));
         return;
     }
 
-    TArray<uint8> HandIndices = { RightHandIndex };
-    if (IsValid(StartingWeapons[RightHandIndex].DataTable) && StartingWeapons[RightHandIndex].RowName != NAME_None) {
-        HandIndices.Add(LeftHandIndex);
+    AWeapon* Weapons[2] = { nullptr, nullptr };
+    TArray<uint8> HandIndices = { RightHand };
+    if (IsValid(StartingWeapons[RightHand].DataTable) && StartingWeapons[RightHand].RowName != NAME_None) {
+        HandIndices.Add(LeftHand);
     }
 
-    AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
-    returnIfNull(MainCharacter);
-    const USkeletalMeshComponent* Mesh = MainCharacter->GetMesh();
-    returnIfNull(Mesh);
-
     for (const uint8 HandIndex : HandIndices) {
-        const FDataTableRowHandle RowHandle = HandIndex == RightHandIndex ? StartingWeapons[RightHandIndex] : StartingWeapons[LeftHandIndex];
+        const FDataTableRowHandle RowHandle = HandIndex == RightHand ? StartingWeapons[RightHand] : StartingWeapons[LeftHand];
 
         static const FString ContextString(TEXT("Equipping Weapon"));
         const FWeaponData* WeaponData = RowHandle.DataTable->FindRow<FWeaponData>(RowHandle.RowName, ContextString);
+
         if (!ensure(WeaponData)) continue;
 
-        const FName SocketName = HandIndex == RightHandIndex ? MainCharacter->GetRightHandSocketName() : MainCharacter->GetLeftHandSocketName();
-        const FTransform SocketTransform = Mesh->GetSocketTransform(SocketName);
-
-        AWeapon* Weapon = AWeapon::Spawn(*WeaponData, StartingWeaponsCorruption, GetRandomSun(), SocketTransform, MainCharacter);
-        continueIfNull(Weapon);
-        EquipWeapon(Weapon, HandIndex);
+        Weapons[HandIndex] = AWeapon::Spawn(
+           *WeaponData,
+           StartingWeaponsCorruption,
+           GetRandomSun(),
+           GetPawn()->GetActorTransform(),
+           GetPawn()
+        );
     }
 
-    UpdateCombatStyle();
+    EquipWeapons(Weapons[RightHand], Weapons[LeftHand]);
 }
 
 void ACustomPlayerState::EquipWeapons(AWeapon* RightHandWeapon, AWeapon* LeftHandWeapon) {
-    returnIfNull(RightHandWeapon);
-
-    if (IsValid(RightHandWeapon)) {
-        EquipWeapon(RightHandWeapon, RightHandIndex);
-    }
-
-    if (IsValid(LeftHandWeapon)) {
-        EquipWeapon(LeftHandWeapon, LeftHandIndex);
-    } else {
-        RemoveWeapon(LeftHandIndex);
-    }
-
+    EquipmentManager->EquipWeapons(RightHandWeapon, LeftHandWeapon);
     UpdateCombatStyle();
-}
-
-void ACustomPlayerState::EquipWeapon(AWeapon* Weapon, const uint8 HandIndex) {
-    const AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
+    AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
     returnIfNull(MainCharacter);
-    USkeletalMeshComponent* Mesh = MainCharacter->GetMesh();
-    returnIfNull(Mesh);
-
-    const FName SocketName = HandIndex == RightHandIndex ? MainCharacter->GetRightHandSocketName() : MainCharacter->GetLeftHandSocketName();
-
-    if (Weapon != EquippedWeapons[HandIndex]) RemoveWeapon(HandIndex);
-    Weapon->AttachToComponent(Mesh, FAttachmentTransformRules::SnapToTargetIncludingScale, SocketName);
-    EquippedWeapons[HandIndex] = Weapon;
-}
-
-void ACustomPlayerState::RemoveWeapon(const uint8 HandIndex) {
-    if (!IsValid(EquippedWeapons[HandIndex])) return;
-    EquippedWeapons[HandIndex]->Destroy();
-    EquippedWeapons[HandIndex] = nullptr;
-    UpdateCombatStyle();
+    MainCharacter->AttachEquipmentToMesh(EquipmentManager->GetEquippedWeapon(EEquipmentSlot::RightHand), EEquipmentSlot::RightHand);
+    MainCharacter->AttachEquipmentToMesh(EquipmentManager->GetEquippedWeapon(EEquipmentSlot::LeftHand), EEquipmentSlot::LeftHand);
 }
 
 void ACustomPlayerState::UpdateCombatStyle() {
-    returnIfNull(EquippedWeapons[RightHandIndex]);
-    const EWeaponType RightHandWeaponType = EquippedWeapons[RightHandIndex]->GetWeaponData().WeaponType;
-
-    EWeaponType LeftHandWeaponType = EWeaponType::None;
-    if (IsValid(EquippedWeapons[LeftHandIndex])) {
-        LeftHandWeaponType = EquippedWeapons[LeftHandIndex]->GetWeaponData().WeaponType;
+    const ECombatStyle* NewCombatStyle = EquipmentManager->GetCombatStyle().GetPtrOrNull();
+    if (!NewCombatStyle) {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to determine Combat Style for player %s."), *GetPlayerName());
+        return;
     }
 
-    if (RightHandWeaponType == EWeaponType::Sword && LeftHandWeaponType == EWeaponType::SpellFocus) {
-        CombatStyle = ECombatStyle::SwordAndSorcery;
-    } else if (RightHandWeaponType == EWeaponType::Sword && LeftHandWeaponType == EWeaponType::Sword) {
-        CombatStyle = ECombatStyle::DualWielding;
-    } else if (RightHandWeaponType == EWeaponType::Sword && LeftHandWeaponType == EWeaponType::None) {
-        CombatStyle = ECombatStyle::SingleSword;
-    } else if (RightHandWeaponType == EWeaponType::Heavy) {
-        CombatStyle = ECombatStyle::TwoHanded;
-    } else if (RightHandWeaponType == EWeaponType::SpellFocus && LeftHandWeaponType == EWeaponType::SpellFocus) {
-        CombatStyle = ECombatStyle::Spellcasting;
-    } else if (RightHandWeaponType == EWeaponType::Bow) {
-        CombatStyle = ECombatStyle::Archery;
-    } else {
-        UE_LOG(LogTemp, Warning, TEXT("%s is using an invalid weapon combination."), *(GetPawn()->GetName()));
-    }
+    const ECombatStyle PreviousCombatStyle = CombatStyle;
+    CombatStyle = *NewCombatStyle;
 
     static const TMap<ECombatStyle, FGameplayTag> CombatStyleTags = {
         {ECombatStyle::SwordAndSorcery, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Sword.SwordAndSorcery"))},
@@ -153,34 +116,35 @@ void ACustomPlayerState::UpdateCombatStyle() {
         {ECombatStyle::Spellcasting, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Spellcasting"))},
         {ECombatStyle::Archery, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Archery"))}
     };
-    static TArray<FGameplayTag> CombatStyles = {};
-    if (CombatStyles.Num() == 0) CombatStyleTags.GenerateValueArray(CombatStyles);
 
-    AbilitySystemComponent->RemoveLooseGameplayTags(FGameplayTagContainer::CreateFromArray(CombatStyles));
+    AbilitySystemComponent->RemoveLooseGameplayTag(CombatStyleTags[PreviousCombatStyle]);
     AbilitySystemComponent->AddLooseGameplayTag(CombatStyleTags[CombatStyle]);
 }
 
 ESun ACustomPlayerState::GetDominantSun() const {
-    if (!IsValid(EquippedWeapons[LeftHandIndex])) {
-        return EquippedWeapons[RightHandIndex]->GetDominantSun();
+    const AWeapon* RightHandWeapon = EquipmentManager->GetEquippedWeapon(EEquipmentSlot::RightHand);
+    const AWeapon* LeftHandWeapon = EquipmentManager->GetEquippedWeapon(EEquipmentSlot::LeftHand);
+
+    if (!IsValid(LeftHandWeapon)) {
+        return RightHandWeapon->GetDominantSun();
     }
 
-    if (EquippedWeapons[RightHandIndex]->GetCorruptionIntensity() > EquippedWeapons[LeftHandIndex]->GetCorruptionIntensity()) {
-        return EquippedWeapons[RightHandIndex]->GetDominantSun();
+    if (RightHandWeapon->GetCorruptionIntensity() > LeftHandWeapon->GetCorruptionIntensity()) {
+        return RightHandWeapon->GetDominantSun();
     } else {
-        return EquippedWeapons[LeftHandIndex]->GetDominantSun();
+        return LeftHandWeapon->GetDominantSun();
     }
 }
 
 float ACustomPlayerState::GetCorruptionPercent() const {
     float TotalCorruption = 0;
 
-    if (IsValid(EquippedWeapons[RightHandIndex])) {
-        TotalCorruption += EquippedWeapons[RightHandIndex]->GetCorruptionIntensity();
+    if (const AWeapon* RightHandWeapon = EquipmentManager->GetEquippedWeapon(EEquipmentSlot::RightHand); IsValid(RightHandWeapon)) {
+        TotalCorruption += RightHandWeapon->GetCorruptionIntensity();
     }
 
-    if (IsValid(EquippedWeapons[LeftHandIndex])) {
-        TotalCorruption += EquippedWeapons[LeftHandIndex]->GetCorruptionIntensity();
+    if (const AWeapon* LeftHandWeapon = EquipmentManager->GetEquippedWeapon(EEquipmentSlot::LeftHand); IsValid(LeftHandWeapon)) {
+        TotalCorruption += LeftHandWeapon->GetCorruptionIntensity();
     }
 
     return TotalCorruption;

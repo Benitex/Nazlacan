@@ -5,6 +5,7 @@
 #include "AbilitySystemInterface.h"
 #include "EnemyData.h"
 #include "Nazlacan/Characters/BaseCharacter.h"
+#include "Nazlacan/Characters/AttributeSets/CharacterAttributeSet.h"
 #include "Enemy.generated.h"
 
 UCLASS()
@@ -31,10 +32,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
-
-	virtual AWeapon* GetEquippedWeapon(const uint8 HandIndex = ACustomPlayerState::RightHandIndex) const override {
-		return nullptr; // TODO 
-	}
 
 	virtual ESun GetDominantSun() const override { return Data.Sun; }
 	virtual float GetDefaultCriticalChance() const override { return Data.CriticalChance; }

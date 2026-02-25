@@ -6,6 +6,7 @@
 #include "Nazlacan/Abilities/AbilitiesAttributeSet.h"
 #include "Nazlacan/Characters/AttributeSets/CharacterAttributeSet.h"
 #include "Nazlacan/Characters/AttributeSets/PlayerCharacterAttributeSet.h"
+#include "Nazlacan/Equipment/EquipmentManagerComponent.h"
 #include "Nazlacan/Weapons/CombatStyle.h"
 #include "Nazlacan/Weapons/Weapon.h"
 #include "CustomPlayerState.generated.h"
@@ -14,8 +15,11 @@ UCLASS()
 class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySystemInterface {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UEquipmentManagerComponent> EquipmentManager;
 
 	UPROPERTY() TObjectPtr<const UCharacterAttributeSet> CharacterAttributeSet;
 	UPROPERTY() TObjectPtr<const UPlayerCharacterAttributeSet> PlayerAttributeSet;
@@ -40,18 +44,12 @@ class NAZLACAN_API ACustomPlayerState : public APlayerState, public IAbilitySyst
 	float StartingWeaponsCorruption;
 
 public:
-	static constexpr uint8 RightHandIndex = 0;
-	static constexpr uint8 LeftHandIndex = 1;
-
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	int32 Experience = 0;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	FDataTableRowHandle StartingWeapons[2];
-
-	UPROPERTY(VisibleInstanceOnly, Category = "Combat")
-	AWeapon* EquippedWeapons[2] = { nullptr, nullptr };
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "Combat")
 	ECombatStyle CombatStyle = ECombatStyle::SwordAndSorcery;
@@ -69,20 +67,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	ECombatStyle GetCombatStyle() const { return CombatStyle; }
 
-	UFUNCTION(BLueprintCallable, Category = "Abilities")
+	UFUNCTION(BlueprintCallable, Category = "Abilities")
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {
 		return AbilitySystemComponent;
 	}
-
-	// Pass nullptr in LeftHandWeapon to only equip the right hand weapon and unequip the left hand weapon
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void EquipWeapons(AWeapon* RightHandWeapon, AWeapon* LeftHandWeapon);
-
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void RemoveLeftHandWeapon() { RemoveWeapon(LeftHandIndex); UpdateCombatStyle(); }
-
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	AWeapon* GetEquippedWeapon(const uint8 HandIndex) const { return EquippedWeapons[HandIndex]; }
 
 	UFUNCTION(BlueprintCallable, Category = "Corruption")
 	ESun GetDominantSun() const;
@@ -95,12 +83,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	bool HasFullHealth() const { return CharacterAttributeSet->GetHealth() >= CharacterAttributeSet->GetMaxHealth(); }
 
-protected:
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void EquipWeapon(AWeapon* Weapon, uint8 HandIndex);
+	// Equips weapons using the EquipmentManagerComponent, updates the combat style and attaches the weapons to the character mesh.
+	// Pass nullptr in LeftHandWeapon to only equip the right hand weapon and unequip the left hand weapon
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void EquipWeapons(AWeapon* RightHandWeapon, AWeapon* LeftHandWeapon);
 
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void RemoveWeapon(uint8 HandIndex);
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	AWeapon* GetEquippedWeapon(const EEquipmentSlot HandSlot) const { return EquipmentManager->GetEquippedWeapon(HandSlot); }
 
 private:
 	void UpdateCombatStyle();

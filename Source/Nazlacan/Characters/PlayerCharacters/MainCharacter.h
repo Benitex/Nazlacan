@@ -35,10 +35,11 @@ class NAZLACAN_API AMainCharacter : public ACharacter, public IBaseCharacter, pu
     UPROPERTY(EditDefaultsOnly)
     TMap<ECombatStyle, UAnimMontage*> DeathMontages;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-    FName RightHandSocketName = TEXT("right_hand_socket");
-    UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-    FName LeftHandSocketName = TEXT("left_hand_socket");
+    UPROPERTY(EditDefaultsOnly, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
+    TMap<EEquipmentSlot, FName> EquipmentSockets = {
+        { EEquipmentSlot::RightHand, TEXT("right_hand_socket") },
+        { EEquipmentSlot::LeftHand, TEXT("left_hand_socket") },
+    };
 
 protected:
     // How much to reduce the upward velocity after stopping a jump.
@@ -60,9 +61,6 @@ private:
     FVector MovementIntendedDirection;
     float DefaultMaxWalkSpeed;
 
-    FTransform RightHandSocket;
-    FTransform LeftHandSocket;
-
 public:
     AMainCharacter();
     virtual void PostInitializeComponents() override;
@@ -72,10 +70,6 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual ACustomPlayerState* GetState() const { return State.Get(); }
-
-    virtual AWeapon* GetEquippedWeapon(const uint8 HandIndex = ACustomPlayerState::RightHandIndex) const override {
-        return State->GetEquippedWeapon(HandIndex);
-    }
 
     virtual float GetDefaultCriticalChance() const override { return CriticalChance; }
     float GetDefaultHealingPower() const { return HealingPower; }
@@ -127,10 +121,9 @@ public:
     void SetMovementIntendedDirection(const FVector& NewDirection) { MovementIntendedDirection = NewDirection; }
 
     float GetDefaultMaxWalkSpeed() const { return DefaultMaxWalkSpeed; }
-    FName GetRightHandSocketName() const { return RightHandSocketName; }
-    FName GetLeftHandSocketName() const { return LeftHandSocketName; }
+
+    void AttachEquipmentToMesh(const TScriptInterface<IEquipment>& Equipment, const EEquipmentSlot Slot);
 
 private:
     void SetupCamera();
-    void LoadSockets();
 };

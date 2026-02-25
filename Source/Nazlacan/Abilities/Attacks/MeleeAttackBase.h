@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Nazlacan/Abilities/BaseGameplayAbility.h"
+#include "Nazlacan/Characters/PlayerCharacters/MainCharacter.h"
 #include "MeleeAttackBase.generated.h"
 
 UCLASS()
@@ -35,7 +36,11 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "Attack")
 	bool bShouldContinueCombo = false;
 
+	TWeakObjectPtr<AMainCharacter> MainCharacter;
+
 protected:
+	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	virtual void TryToActivateNextAttack();
 
@@ -51,6 +56,8 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	virtual void RemoveLastAttackTag() const;
 
-private:
-	FGameplayEffectSpecHandle GetEffectSpecHandle(const uint8 ForHand) const;
+protected:
+	FGameplayEffectSpecHandle GetEffectSpecHandle(const EEquipmentSlot ForHand) const;
+
+	AWeapon* GetEquippedWeapon(const EEquipmentSlot InHand) const;
 };

@@ -7,8 +7,8 @@
 #include "Nazlacan/Characters/AttributeSets/CharacterAttributeSet.h"
 #include "Nazlacan/Characters/AttributeSets/PlayerCharacterAttributeSet.h"
 #include "Nazlacan/Equipment/EquipmentManagerComponent.h"
-#include "Nazlacan/Weapons/CombatStyle.h"
-#include "Nazlacan/Weapons/Weapon.h"
+#include "Nazlacan/Equipment/Weapons/CombatStyle.h"
+#include "Nazlacan/Equipment/Weapons/Weapon.h"
 #include "CustomPlayerState.generated.h"
 
 UCLASS()

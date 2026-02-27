@@ -31,7 +31,7 @@ struct NAZLACAN_API FWeaponData : public FTableRowBase {
     float AttackSpeedMultiplier = 1;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    float CriticalMultiplier = 1;
+    float CriticalDamageMultiplier = 2;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     ESun DefaultSun = ESun::None;

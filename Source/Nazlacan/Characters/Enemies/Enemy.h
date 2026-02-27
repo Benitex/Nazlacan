@@ -33,11 +33,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; }
 
+	virtual float GetBaseDamage() const override { return Data.BaseDamage; }
+
 	virtual ESun GetDominantSun() const override { return Data.Sun; }
 	virtual float GetDefaultCriticalChance() const override { return Data.CriticalChance; }
 	virtual float GetCorruptionPercent() const override { return CorruptionIntensity; }
 	virtual float GetExperienceDroppedOnDeath() const override { return Data.ExperienceDroppedOnDeath; }
 
 	virtual UAnimMontage* GetDeathMontage() const override { return Data.DeathMontage; }
-	virtual UAnimMontage* GetHitReactMontage() const override { return Data.HitReactMontage; } // TODO consider not having a hit react
+	virtual UAnimMontage* GetHitReactMontage() const override { return Data.HitReactMontage; }
 };

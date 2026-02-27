@@ -4,7 +4,7 @@
 #include "MainCharacter.h"
 #include "Animation/AnimInstance.h"
 #include "Nazlacan/Systems/CustomPlayerState.h"
-#include "Nazlacan/Weapons/CombatStyle.h"
+#include "Nazlacan/Equipment/Weapons/CombatStyle.h"
 #include "MainCharacterAnimInstance.generated.h"
 
 UCLASS()

@@ -5,7 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Nazlacan/Characters/PlayerCharacters/MainCharacter.h"
 #include "EnhancedInputSubsystems.h"
-#include "Nazlacan/Weapons/CombatStyleCombo.h"
+#include "Nazlacan/Equipment/Weapons/CombatStyleCombo.h"
 #include "CustomPlayerController.generated.h"
 
 class UInputAction;

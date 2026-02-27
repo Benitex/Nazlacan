@@ -2,8 +2,6 @@
 #include "AbilitySystemComponent.h"
 #include "Nazlacan/Macros.h"
 #include "Nazlacan/Characters/PlayerCharacters/MainCharacter.h"
-#include "Nazlacan/Weapons/Weapon.h"
-#include "Nazlacan/Weapons/WeaponData.h"
 
 ACustomPlayerState::ACustomPlayerState() {
     AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));

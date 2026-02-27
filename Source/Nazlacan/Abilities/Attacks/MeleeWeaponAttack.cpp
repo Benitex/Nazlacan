@@ -1,58 +1,47 @@
-#include "MeleeAttackBase.h"
+#include "MeleeWeaponAttack.h"
 #include "Nazlacan/Macros.h"
 
-void UMeleeAttackBase::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) {
+void UMeleeWeaponAttack::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) {
     Super::OnAvatarSet(ActorInfo, Spec);
     MainCharacter = Cast<AMainCharacter>(Character.Get());
 }
 
-void UMeleeAttackBase::TryToActivateNextAttack() {
+void UMeleeWeaponAttack::TryToActivateNextAttack() {
     if (!MainCharacter.IsValid()) return;
     MainCharacter->TryToActivateNextAttack();
 }
 
-void UMeleeAttackBase::StartHitDetection() const {
+void UMeleeWeaponAttack::StartHitDetection() const {
     if (!MainCharacter.IsValid()) return;
     if (!ensure(bUsesRightHandWeapon || bUsesLeftHandWeapon)) return;
 
     if (bUsesRightHandWeapon) {
-        const FGameplayEffectSpecHandle SpecHandle = GetEffectSpecHandle(EEquipmentSlot::RightHand);
+        const FGameplayEffectSpecHandle SpecHandle = GetDamageEffectSpecHandleForHand(EEquipmentSlot::RightHand);
         AWeapon* Weapon = GetEquippedWeapon(EEquipmentSlot::RightHand);
         Weapon->StartCollisionDetection(GetAvatarActorFromActorInfo(), SpecHandle);
     }
     if (bUsesLeftHandWeapon) {
-        const FGameplayEffectSpecHandle SpecHandle = GetEffectSpecHandle(EEquipmentSlot::LeftHand);
+        const FGameplayEffectSpecHandle SpecHandle = GetDamageEffectSpecHandleForHand(EEquipmentSlot::LeftHand);
         AWeapon* Weapon = GetEquippedWeapon(EEquipmentSlot::LeftHand);
         Weapon->StartCollisionDetection(GetAvatarActorFromActorInfo(), SpecHandle);
     }
 }
 
-FGameplayEffectSpecHandle UMeleeAttackBase::GetEffectSpecHandle(const EEquipmentSlot ForHand) const {
+FGameplayEffectSpecHandle UMeleeWeaponAttack::GetDamageEffectSpecHandleForHand(const EEquipmentSlot Hand) const {
     const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(EffectToApplyOnHit, GetAbilityLevel());
-    FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
     returnIfNull(MainCharacter.Get()) SpecHandle;
-
-    AWeapon* EquippedWeapon = GetEquippedWeapon(ForHand);
-    Spec->GetContext().AddInstigator(GetAvatarActorFromActorInfo(), IsValid(EquippedWeapon) ? EquippedWeapon : GetAvatarActorFromActorInfo());
+    AWeapon* EquippedWeapon = GetEquippedWeapon(Hand);
     returnIfNull(EquippedWeapon) SpecHandle;
 
-    float WeaponDamage = EquippedWeapon->GetWeaponData().BaseDamage;
-    WeaponDamage *= MotionValue;
-    static const FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Data.Damage"));
-    Spec->SetSetByCallerMagnitude(DamageTag, WeaponDamage);
-
+    const float Damage = EquippedWeapon->GetWeaponData().BaseDamage * MotionValue;
+    const float CriticalDamageMultiplier = EquippedWeapon->GetWeaponData().CriticalDamageMultiplier;
     ESun Sun = ESun::None;
     if (bShouldApplyElementalDamage) Sun = EquippedWeapon->GetDominantSun();
-    static const FGameplayTag SunTag = FGameplayTag::RequestGameplayTag(FName("Data.Sun"));
-    Spec->SetSetByCallerMagnitude(SunTag, static_cast<float>(Sun));
 
-    static const FGameplayTag CriticalTag = FGameplayTag::RequestGameplayTag(FName("Data.CriticalMultiplier"));
-    Spec->SetSetByCallerMagnitude(CriticalTag, EquippedWeapon->GetWeaponData().CriticalMultiplier);
-
-    return SpecHandle;
+    return GetDamageEffectSpecHandle(Damage, Sun, CriticalDamageMultiplier, EquippedWeapon);
 }
 
-void UMeleeAttackBase::StopHitDetection() const {
+void UMeleeWeaponAttack::StopHitDetection() const {
     if (!MainCharacter.IsValid()) return;
 
     if (bUsesRightHandWeapon) {
@@ -65,20 +54,17 @@ void UMeleeAttackBase::StopHitDetection() const {
     }
 }
 
-bool UMeleeAttackBase::ShouldMoveDuringAttack() const {
-    if (SpeedModifier == 0) return false;
-
+bool UMeleeWeaponAttack::ShouldMoveDuringAttack() const {
     if (!MainCharacter.IsValid()) return false;
     if (MainCharacter->GetMovementIntendedDirection().IsNearlyZero()) return false;
-
-    return true;
+    return Super::ShouldMoveDuringAttack();
 }
 
-void UMeleeAttackBase::RemoveLastAttackTag() const {
+void UMeleeWeaponAttack::RemoveLastAttackTag() const {
     if (MainCharacter.IsValid()) MainCharacter->RemoveLastAttack();
 }
 
-AWeapon* UMeleeAttackBase::GetEquippedWeapon(const EEquipmentSlot InHand) const {
+AWeapon* UMeleeWeaponAttack::GetEquippedWeapon(const EEquipmentSlot InHand) const {
     if (!MainCharacter.IsValid()) return nullptr;
     return MainCharacter->GetState()->GetEquippedWeapon(InHand);
 }

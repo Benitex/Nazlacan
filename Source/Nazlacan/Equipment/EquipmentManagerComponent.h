@@ -3,8 +3,8 @@
 #include "CoreMinimal.h"
 #include "Equipment.h"
 #include "Components/ActorComponent.h"
-#include "Nazlacan/Weapons/CombatStyle.h"
-#include "Nazlacan/Weapons/Weapon.h"
+#include "Nazlacan/Equipment/Weapons/CombatStyle.h"
+#include "Nazlacan/Equipment/Weapons/Weapon.h"
 #include "EquipmentManagerComponent.generated.h"
 
 UENUM(BlueprintType)

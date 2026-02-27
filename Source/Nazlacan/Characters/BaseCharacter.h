@@ -14,6 +14,7 @@ class NAZLACAN_API IBaseCharacter {
 	GENERATED_BODY()
 
 public:
+	virtual float GetBaseDamage() const = 0;
 	virtual float GetDefaultCriticalChance() const = 0;
 
     virtual ESun GetDominantSun() const = 0;

@@ -24,6 +24,10 @@ class NAZLACAN_API AMainCharacter : public ACharacter, public IBaseCharacter, pu
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Navigation", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UNavigationInvokerComponent> NavigationInvoker;
 
+    // Base damage for abilities that do not use Weapons
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+    float BaseDamage;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta = (ClampMin = 0, ClampMax = 1, AllowPrivateAccess = "true"))
     float CriticalChance;
 
@@ -71,6 +75,7 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual ACustomPlayerState* GetState() const { return State.Get(); }
 
+    virtual float GetBaseDamage() const override { return BaseDamage; }
     virtual float GetDefaultCriticalChance() const override { return CriticalChance; }
     float GetDefaultHealingPower() const { return HealingPower; }
 

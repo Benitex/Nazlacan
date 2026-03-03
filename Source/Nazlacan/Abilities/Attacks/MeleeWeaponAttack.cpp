@@ -66,5 +66,5 @@ void UMeleeWeaponAttack::RemoveLastAttackTag() const {
 
 AWeapon* UMeleeWeaponAttack::GetEquippedWeapon(const EEquipmentSlot InHand) const {
     if (!MainCharacter.IsValid()) return nullptr;
-    return MainCharacter->GetState()->GetEquippedWeapon(InHand);
+    return MainCharacter->GetState()->GetEquipmentManagerComponent()->GetEquippedWeapon(InHand);
 }

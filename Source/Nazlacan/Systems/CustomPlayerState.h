@@ -59,6 +59,7 @@ private:
 
 public:
 	ACustomPlayerState();
+	virtual void PostInitializeComponents() override;
 
 	// Only callable on server
 	void LoadAbilitiesAndEffects();
@@ -72,6 +73,9 @@ public:
 		return AbilitySystemComponent;
 	}
 
+	UFUNCTION(BlueprintCallable, Category = "Equipment")
+	UEquipmentManagerComponent* GetEquipmentManagerComponent() const { return EquipmentManager; }
+
 	UFUNCTION(BlueprintCallable, Category = "Corruption")
 	ESun GetDominantSun() const;
 
@@ -83,15 +87,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	bool HasFullHealth() const { return CharacterAttributeSet->GetHealth() >= CharacterAttributeSet->GetMaxHealth(); }
 
-	// Equips weapons using the EquipmentManagerComponent, updates the combat style and attaches the weapons to the character mesh.
-	// Pass nullptr in LeftHandWeapon to only equip the right hand weapon and unequip the left hand weapon
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void EquipWeapons(AWeapon* RightHandWeapon, AWeapon* LeftHandWeapon);
-
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	AWeapon* GetEquippedWeapon(const EEquipmentSlot HandSlot) const { return EquipmentManager->GetEquippedWeapon(HandSlot); }
+protected:
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
+	UFUNCTION()
 	void UpdateCombatStyle();
-	void EquipStartingWeapons();
+	void EquipStartingWeapons() const;
 };

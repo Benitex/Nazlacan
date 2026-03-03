@@ -3,8 +3,18 @@
 
 void UEquipmentManagerComponent::EquipItem(const TScriptInterface<IEquipment> Item, const EEquipmentSlot ToSlot) {
 	if (Item.GetObject() == EquippedItems[ToSlot].GetObject()) return;
+
 	RemoveItem(ToSlot);
 	EquippedItems.Add(ToSlot, Item);
+
+	if (OnItemChanged.IsBound()) OnItemChanged.Broadcast(ToSlot);
+}
+
+TScriptInterface<IEquipment> UEquipmentManagerComponent::GetItemInSlot(const EEquipmentSlot Slot) {
+	if (TScriptInterface<IEquipment>* Item = EquippedItems.Find(Slot)) {
+		return *Item;
+	}
+	return TScriptInterface<IEquipment>();
 }
 
 void UEquipmentManagerComponent::RemoveItem(const EEquipmentSlot Slot) {
@@ -13,6 +23,8 @@ void UEquipmentManagerComponent::RemoveItem(const EEquipmentSlot Slot) {
 
 	Equipment->GetInterface()->DestroyEquipment();
 	EquippedItems.Remove(Slot);
+
+	if (OnItemChanged.IsBound()) OnItemChanged.Broadcast(Slot);
 }
 
 void UEquipmentManagerComponent::EquipWeapons(AWeapon* RightHandWeapon, AWeapon* LeftHandWeapon) {
@@ -27,6 +39,8 @@ void UEquipmentManagerComponent::EquipWeapons(AWeapon* RightHandWeapon, AWeapon*
 	} else {
 		RemoveItem(EEquipmentSlot::LeftHand);
 	}
+
+	if (OnWeaponsEquipped.IsBound()) OnWeaponsEquipped.Broadcast();
 }
 
 AWeapon* UEquipmentManagerComponent::GetEquippedWeapon(const EEquipmentSlot HandSlot) const {

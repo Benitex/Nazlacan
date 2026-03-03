@@ -16,9 +16,19 @@ enum class EEquipmentSlot : uint8 {
 	Liver,
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemChanged, EEquipmentSlot, Slot);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponsEquipped);
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class NAZLACAN_API UEquipmentManagerComponent : public UActorComponent {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintAssignable, Category = "Equipment")
+	FOnItemChanged OnItemChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Weapon")
+	FOnWeaponsEquipped OnWeaponsEquipped;
 
 protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Equipment")
@@ -33,9 +43,12 @@ protected:
 public:
 	UEquipmentManagerComponent() = default;
 
-    // Use EquipWeapons for validated Weapon equips considering Combat Styles
+    // Use EquipWeapons for validated Weapon equips considering and updating Combat Styles
 	UFUNCTION(BlueprintCallable, Category = "Equipment")
 	void EquipItem(const TScriptInterface<IEquipment> Item, const EEquipmentSlot ToSlot);
+
+	UFUNCTION(BlueprintCallable, Category = "Equipment")
+	TScriptInterface<IEquipment> GetItemInSlot(const EEquipmentSlot Slot);
 
 	UFUNCTION(BlueprintCallable, Category = "Equipment")
 	void RemoveItem(const EEquipmentSlot Slot);

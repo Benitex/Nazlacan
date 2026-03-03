@@ -70,6 +70,7 @@ public:
     virtual void PostInitializeComponents() override;
 
     virtual void PossessedBy(AController* NewController) override;
+    virtual void UnPossessed() override;
     virtual void OnRep_PlayerState() override;
 
     UFUNCTION(BlueprintCallable)
@@ -131,4 +132,8 @@ public:
 
 private:
     void SetupCamera();
+    void AttachEquipmentFromState();
+
+    UFUNCTION()
+    void OnEquipmentChanged(const EEquipmentSlot Slot);
 };

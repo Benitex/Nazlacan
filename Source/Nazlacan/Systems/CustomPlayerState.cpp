@@ -1,6 +1,5 @@
 #include "CustomPlayerState.h"
 #include "AbilitySystemComponent.h"
-#include "Nazlacan/Macros.h"
 #include "Nazlacan/Characters/PlayerCharacters/MainCharacter.h"
 
 ACustomPlayerState::ACustomPlayerState() {
@@ -15,6 +14,16 @@ ACustomPlayerState::ACustomPlayerState() {
     EquipmentManager = CreateDefaultSubobject<UEquipmentManagerComponent>(TEXT("EquipmentManager"));
 }
 
+void ACustomPlayerState::PostInitializeComponents() {
+    Super::PostInitializeComponents();
+    EquipmentManager->OnWeaponsEquipped.AddDynamic(this, &ACustomPlayerState::UpdateCombatStyle);
+}
+
+void ACustomPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+    Super::EndPlay(EndPlayReason);
+    EquipmentManager->OnWeaponsEquipped.RemoveDynamic(this, &ACustomPlayerState::UpdateCombatStyle);
+}
+
 void ACustomPlayerState::LoadAbilitiesAndEffects() {
     if (GetLocalRole() != ROLE_Authority) return;
 
@@ -22,10 +31,6 @@ void ACustomPlayerState::LoadAbilitiesAndEffects() {
         EquipStartingWeapons();
         LoadDefaultEffectsAndAttributes();
         bLoadedDefaultAttributes = true;
-    } else {
-        AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
-        MainCharacter->AttachEquipmentToMesh(EquipmentManager->GetEquippedWeapon(EEquipmentSlot::RightHand), EEquipmentSlot::RightHand);
-        MainCharacter->AttachEquipmentToMesh(EquipmentManager->GetEquippedWeapon(EEquipmentSlot::LeftHand), EEquipmentSlot::LeftHand);
     }
 
     // Reset attributes
@@ -52,7 +57,7 @@ void ACustomPlayerState::LoadDefaultEffectsAndAttributes() {
     }
 }
 
-void ACustomPlayerState::EquipStartingWeapons() {
+void ACustomPlayerState::EquipStartingWeapons() const {
     constexpr uint8 RightHand = 0;
     constexpr uint8 LeftHand = 1;
 
@@ -84,16 +89,7 @@ void ACustomPlayerState::EquipStartingWeapons() {
         );
     }
 
-    EquipWeapons(Weapons[RightHand], Weapons[LeftHand]);
-}
-
-void ACustomPlayerState::EquipWeapons(AWeapon* RightHandWeapon, AWeapon* LeftHandWeapon) {
-    EquipmentManager->EquipWeapons(RightHandWeapon, LeftHandWeapon);
-    UpdateCombatStyle();
-    AMainCharacter* MainCharacter = GetPawn<AMainCharacter>();
-    returnIfNull(MainCharacter);
-    MainCharacter->AttachEquipmentToMesh(EquipmentManager->GetEquippedWeapon(EEquipmentSlot::RightHand), EEquipmentSlot::RightHand);
-    MainCharacter->AttachEquipmentToMesh(EquipmentManager->GetEquippedWeapon(EEquipmentSlot::LeftHand), EEquipmentSlot::LeftHand);
+    EquipmentManager->EquipWeapons(Weapons[RightHand], Weapons[LeftHand]);
 }
 
 void ACustomPlayerState::UpdateCombatStyle() {
@@ -115,8 +111,8 @@ void ACustomPlayerState::UpdateCombatStyle() {
         {ECombatStyle::Archery, FGameplayTag::RequestGameplayTag(FName("CombatStyle.Archery"))}
     };
 
-    AbilitySystemComponent->RemoveLooseGameplayTag(CombatStyleTags[PreviousCombatStyle]);
-    AbilitySystemComponent->AddLooseGameplayTag(CombatStyleTags[CombatStyle]);
+    AbilitySystemComponent->RemoveLooseGameplayTag(*CombatStyleTags.Find(PreviousCombatStyle));
+    AbilitySystemComponent->AddLooseGameplayTag(*CombatStyleTags.Find(CombatStyle));
 }
 
 ESun ACustomPlayerState::GetDominantSun() const {

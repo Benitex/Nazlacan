@@ -27,15 +27,28 @@ void AMainCharacter::PostInitializeComponents() {
 void AMainCharacter::PossessedBy(AController* NewController) {
 	Super::PossessedBy(NewController);
 	State = GetPlayerState<ACustomPlayerState>();
+	State->GetEquipmentManagerComponent()->OnItemChanged.AddDynamic(this, &AMainCharacter::OnEquipmentChanged);
+
 	GetAbilitySystemComponent()->InitAbilityActorInfo(State.Get(), this);
 
 	State->LoadAbilitiesAndEffects();
+	AttachEquipmentFromState();
+}
+
+void AMainCharacter::UnPossessed() {
+	Super::UnPossessed();
+	State->GetEquipmentManagerComponent()->OnItemChanged.RemoveDynamic(this, &AMainCharacter::OnEquipmentChanged);
 }
 
 void AMainCharacter::OnRep_PlayerState() {
 	Super::OnRep_PlayerState();
 	State = GetPlayerState<ACustomPlayerState>();
 	GetAbilitySystemComponent()->InitAbilityActorInfo(State.Get(), this);
+}
+
+void AMainCharacter::AttachEquipmentFromState() {
+	AttachEquipmentToMesh(State->GetEquipmentManagerComponent()->GetEquippedWeapon(EEquipmentSlot::RightHand), EEquipmentSlot::RightHand);
+	AttachEquipmentToMesh(State->GetEquipmentManagerComponent()->GetEquippedWeapon(EEquipmentSlot::LeftHand), EEquipmentSlot::LeftHand);
 }
 
 void AMainCharacter::ActivateEventToSelf(const FGameplayTag& Tag) const {
@@ -134,4 +147,10 @@ void AMainCharacter::AttachEquipmentToMesh(const TScriptInterface<IEquipment>& E
 	}
 
 	Equipment.GetInterface()->AttachEquipment(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, *Socket);
+}
+
+void AMainCharacter::OnEquipmentChanged(const EEquipmentSlot Slot) {
+	if (const TScriptInterface<IEquipment> Item = State->GetEquipmentManagerComponent()->GetItemInSlot(Slot)) {
+		AttachEquipmentToMesh(Item, Slot);
+	}
 }

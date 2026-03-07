@@ -30,8 +30,9 @@ protected:
 	ESun DominantSun;
 
 private:
-	TSet<TWeakObjectPtr<AActor>> IgnoredActors = {};
+	UPROPERTY(VisibleInstanceOnly)
 	TSet<TWeakObjectPtr<AActor>> HitActors = {};
+	TSet<TWeakObjectPtr<AActor>> IgnoredActors = {};
 	FGameplayEffectSpecHandle EffectToApplyOnNextHit;
 
 	static constexpr float CollisionBoxZPadding = 10;

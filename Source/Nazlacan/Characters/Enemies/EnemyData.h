@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Abilities/GameplayAbility.h"
 #include "Engine/DataTable.h"
 #include "Nazlacan/Systems/Corruption/Sun.h"
 #include "EnemyData.generated.h"
@@ -25,7 +26,13 @@ struct NAZLACAN_API FEnemyData : public FTableRowBase {
 	float CriticalChance = 0.05;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MovementSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float ExperienceDroppedOnDeath;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<TSubclassOf<UGameplayAbility>> Abilities;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AController> Controller;

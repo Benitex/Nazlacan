@@ -9,36 +9,35 @@ void UMainCharacterAnimInstance::NativeInitializeAnimation() {
 }
 
 void UMainCharacterAnimInstance::LoadCharacter() {
-    AnimatedCharacter = Cast<AMainCharacter>(TryGetPawnOwner());
-    if (IsValid(AnimatedCharacter)) {
-        AnimatedCharacterMovementComponent = Cast<UCharacterMovementComponent>(AnimatedCharacter->GetMovementComponent());
-        AnimatedPlayerState = AnimatedCharacter->GetPlayerState<ACustomPlayerState>();
+    Character = Cast<AMainCharacter>(TryGetPawnOwner());
+    if (!ensure(Character.IsValid())) return;
 
-        USkeletalMeshComponent* AnimatedCharacterMesh = AnimatedCharacter->GetMesh();
-        returnIfNull(AnimatedCharacterMesh);
-        AnimatedCharacterMesh->HideBoneByName(TEXT("bow_base"), EPhysBodyOp::PBO_None);
-        AnimatedCharacterMesh->HideBoneByName(TEXT("arrow_nock"), EPhysBodyOp::PBO_None);
-        AnimatedCharacterMesh->HideBoneByName(TEXT("feathers"), EPhysBodyOp::PBO_None);
-    }
+    AnimatedPlayerState = Character->GetPlayerState<ACustomPlayerState>();
+
+    USkeletalMeshComponent* AnimatedCharacterMesh = Character->GetMesh();
+    returnIfNull(AnimatedCharacterMesh);
+    AnimatedCharacterMesh->HideBoneByName(TEXT("bow_base"), EPhysBodyOp::PBO_None);
+    AnimatedCharacterMesh->HideBoneByName(TEXT("arrow_nock"), EPhysBodyOp::PBO_None);
+    AnimatedCharacterMesh->HideBoneByName(TEXT("feathers"), EPhysBodyOp::PBO_None);
 }
 
 void UMainCharacterAnimInstance::NativeUpdateAnimation(const float DeltaSeconds) {
     Super::NativeUpdateAnimation(DeltaSeconds);
 
-    if (!IsValid(AnimatedCharacter) || !IsValid(AnimatedCharacterMovementComponent) || !IsValid(AnimatedPlayerState)) {
+    if (!Character.IsValid() || !AnimatedPlayerState.IsValid()) {
         LoadCharacter();
     }
-    if (!IsValid(AnimatedCharacter) || !IsValid(AnimatedCharacterMovementComponent) || !IsValid(AnimatedPlayerState)) return;
+    if (!Character.IsValid() || !AnimatedPlayerState.IsValid()) return;
 
-    Speed = AnimatedCharacter->GetVelocity().Size();
-    bIsInAir = AnimatedCharacterMovementComponent->IsFalling();
+    Speed = Character->GetVelocity().Size();
+    bIsInAir = Character->GetCharacterMovement()->IsFalling();
     SetPitchAndYaw();
     CombatStyle = AnimatedPlayerState->GetCombatStyle();
 }
 
 void UMainCharacterAnimInstance::SetPitchAndYaw() {
-    const FRotator CharacterRotator = AnimatedCharacter->GetActorRotation();
-    const FRotator CameraRotator = AnimatedCharacter->GetBaseAimRotation();
+    const FRotator CharacterRotator = Character->GetActorRotation();
+    const FRotator CameraRotator = Character->GetBaseAimRotation();
     FRotator FinalRotator = CameraRotator - CharacterRotator;
     FinalRotator.Normalize();
 

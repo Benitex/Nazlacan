@@ -11,15 +11,6 @@ UCLASS()
 class NAZLACAN_API UMainCharacterAnimInstance : public UAnimInstance {
 	GENERATED_BODY()
 
-	UPROPERTY(Transient)
-	TObjectPtr<AMainCharacter> AnimatedCharacter;
-
-	UPROPERTY(Transient)
-	TObjectPtr<UCharacterMovementComponent> AnimatedCharacterMovementComponent;
-
-	UPROPERTY(Transient)
-	TObjectPtr<ACustomPlayerState> AnimatedPlayerState;
-
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float Speed;
@@ -34,6 +25,13 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	ECombatStyle CombatStyle;
+
+private:
+	UPROPERTY(Transient)
+	TWeakObjectPtr<AMainCharacter> Character;
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<ACustomPlayerState> AnimatedPlayerState;
 
 public:
 	virtual void NativeInitializeAnimation() override;

@@ -22,10 +22,10 @@ struct NAZLACAN_API FWeaponData : public FTableRowBase {
     TObjectPtr<UStaticMesh> Mesh;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    EWeaponType WeaponType;
+    EWeaponType WeaponType = EWeaponType::None;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    int32 BaseDamage;
+    int32 BaseDamage = 0;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float AttackSpeedMultiplier = 1;

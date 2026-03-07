@@ -31,11 +31,15 @@ public:
 
 public:
 	float GetWorldCorruption() const { return WorldCorruption; }
+	float GetSunCorruption(ESun Sun) const;
 
 	UFUNCTION(BlueprintCallable)
 	void SetBiomeForDirection(UBiome* Biome, const ECardinalDirections Direction) {
 		Biomes.Add(Direction, Biome);
 	}
+
+	UFUNCTION(BlueprintCallable)
+	UBiome* GetBiomeAt(const FVector& Point) const;
 
 protected:
 	virtual void BeginPlay() override;

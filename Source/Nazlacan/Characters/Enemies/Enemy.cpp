@@ -1,9 +1,23 @@
 #include "Enemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Nazlacan/Macros.h"
 #include "PhysicsEngine/PhysicsAsset.h"
 
+AEnemy* AEnemy::Spawn(const FEnemyData& EnemyData, const float Corruption, const FTransform& SpawnPosition, UWorld* World) {
+	AEnemy* SpawnedEnemy = World->SpawnActorDeferred<AEnemy>(StaticClass(), SpawnPosition);
+	returnIfNull(SpawnedEnemy) nullptr;
+
+	SpawnedEnemy->Data = EnemyData;
+	SpawnedEnemy->CorruptionIntensity = Corruption;
+
+	SpawnedEnemy->FinishSpawning(SpawnPosition);
+	return SpawnedEnemy;
+}
+
 AEnemy::AEnemy() {
+	bReplicates = true;
+
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);

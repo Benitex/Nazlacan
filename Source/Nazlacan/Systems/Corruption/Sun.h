@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Nazlacan/Level/CardinalDirections.h"
 #include "Sun.generated.h"
 
 UENUM(BlueprintType)
@@ -15,3 +16,4 @@ enum class ESun : uint8 {
 
 ESun GetRandomSun();
 ESun GetSunWeakness(ESun Sun);
+ECardinalDirections GetSunCardinalDirection(ESun Sun);

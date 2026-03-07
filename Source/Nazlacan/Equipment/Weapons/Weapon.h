@@ -38,10 +38,11 @@ private:
 	static constexpr float CollisionBoxZPadding = 10;
 
 public:
+	// Leave the SpawnPosition empty to use the NewOwner position
 	UFUNCTION(BlueprintCallable)
 	static AWeapon* Spawn(
 		const FWeaponData& WeaponData, const float Corruption, const ESun Sun,
-		const FTransform& SpawnPosition, APawn* NewOwner
+		APawn* NewOwner, FTransform SpawnPosition = FTransform()
 	);
 
 	static AWeapon* Spawn(

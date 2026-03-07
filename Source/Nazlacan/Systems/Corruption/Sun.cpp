@@ -15,3 +15,7 @@ ESun GetSunWeakness(ESun Sun) {
     if (Weakness == 0) Weakness = 1;
     return static_cast<ESun>(Weakness);
 }
+
+ECardinalDirections GetSunCardinalDirection(ESun Sun) {
+    return static_cast<ECardinalDirections>(static_cast<uint8>(Sun));
+}

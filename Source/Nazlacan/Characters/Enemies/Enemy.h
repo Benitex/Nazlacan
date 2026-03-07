@@ -29,6 +29,9 @@ protected:
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
 
 public:
+	UFUNCTION(BlueprintCallable)
+	static AEnemy* Spawn(const FEnemyData& EnemyData, const float Corruption, const FTransform& SpawnPosition, UWorld* World);
+
 	AEnemy();
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void PossessedBy(AController* NewController) override;

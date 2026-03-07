@@ -61,14 +61,14 @@ void ACustomPlayerState::EquipStartingWeapons() const {
     constexpr uint8 RightHand = 0;
     constexpr uint8 LeftHand = 1;
 
-    if (!IsValid(StartingWeapons[RightHand].DataTable) || StartingWeapons[RightHand].RowName == NAME_None) {
+    if (!IsValid(StartingWeapons[RightHand].DataTable) || StartingWeapons[RightHand].RowName.IsNone()) {
         UE_LOG(LogTemp, Warning, TEXT("Invalid starting weapons selected. Skipping weapon equip."));
         return;
     }
 
     AWeapon* Weapons[2] = { nullptr, nullptr };
     TArray<uint8> HandIndices = { RightHand };
-    if (IsValid(StartingWeapons[RightHand].DataTable) && StartingWeapons[RightHand].RowName != NAME_None) {
+    if (IsValid(StartingWeapons[LeftHand].DataTable) && !StartingWeapons[LeftHand].RowName.IsNone()) {
         HandIndices.Add(LeftHand);
     }
 
@@ -84,7 +84,6 @@ void ACustomPlayerState::EquipStartingWeapons() const {
            *WeaponData,
            StartingWeaponsCorruption,
            GetRandomSun(),
-           GetPawn()->GetActorTransform(),
            GetPawn()
         );
     }

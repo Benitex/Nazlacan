@@ -6,6 +6,13 @@
 #include "Nazlacan/Systems/Corruption/Sun.h"
 #include "EnemyData.generated.h"
 
+UENUM(BlueprintType)
+enum class EEnemyRarity : uint8 {
+	Common,
+	Uncommon,
+	Rare,
+};
+
 USTRUCT(BlueprintType)
 struct NAZLACAN_API FEnemyData : public FTableRowBase {
 	GENERATED_USTRUCT_BODY()
@@ -15,6 +22,9 @@ struct NAZLACAN_API FEnemyData : public FTableRowBase {
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ESun Sun = ESun::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EEnemyRarity Rarity = EEnemyRarity::Common;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Health;
@@ -32,7 +42,7 @@ struct NAZLACAN_API FEnemyData : public FTableRowBase {
 	float ExperienceDroppedOnDeath;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<TSubclassOf<UGameplayAbility>> Abilities;
+	TArray<TSubclassOf<UGameplayAbility>> Abilities = {};
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AController> Controller;

@@ -6,8 +6,12 @@
 
 AWeapon* AWeapon::Spawn(
 	const FWeaponData& WeaponData, const float Corruption, const ESun Sun,
-	const FTransform& SpawnPosition, APawn* NewOwner
+	APawn* NewOwner, FTransform SpawnPosition
 ) {
+	if (SpawnPosition.Equals(FTransform())) {
+		SpawnPosition = NewOwner->GetActorTransform();
+	}
+
 	AWeapon* SpawnedWeapon = NewOwner->GetWorld()->SpawnActorDeferred<AWeapon>(
 		StaticClass(),
 		SpawnPosition,

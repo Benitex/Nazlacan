@@ -48,14 +48,15 @@ public:
 	// TODO biome world settings
     // TODO music
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Corruption")
-	ESun DominantSun = ESun::None;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayEffect>> EffectsToApply = {};
 
-	// TODO enemies list
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Corruption")
+	ESun DominantSun = ESun::None;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Corruption")
+	TArray<FDataTableRowHandle> Enemies = {};
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PCG Biome Core")
 	TObjectPtr<UPrimaryDataAsset> BiomeDefinition;
 

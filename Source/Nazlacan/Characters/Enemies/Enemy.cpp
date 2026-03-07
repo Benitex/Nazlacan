@@ -1,10 +1,9 @@
 #include "Enemy.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "PhysicsEngine/PhysicsAsset.h"
 
 AEnemy::AEnemy() {
-	PrimaryActorTick.bCanEverTick = true;
-
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
@@ -19,7 +18,9 @@ void AEnemy::OnConstruction(const FTransform& Transform) {
 		UE_LOG(LogTemp, Warning, TEXT("Possibly invalid enemy %s being created"), *Data.Name.ToString());
 	}
 
-	CharacterAttributeSet->SetMaxHealth(Data.Health);
+	CharacterAttributeSet->InitMaxHealth(Data.Health);
+	CharacterAttributeSet->InitHealth(Data.Health);
+	GetCharacterMovement()->MaxWalkSpeed = Data.MovementSpeed;
 
 	if (IsValid(Data.Mesh)) GetMesh()->SetSkeletalMesh(Data.Mesh);
 	if (IsValid(Data.PhysicsAsset)) GetMesh()->SetPhysicsAsset(Data.PhysicsAsset);
@@ -33,4 +34,12 @@ void AEnemy::OnConstruction(const FTransform& Transform) {
 void AEnemy::PossessedBy(AController* NewController) {
 	Super::PossessedBy(NewController);
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	for (const TSubclassOf<UGameplayAbility>& Ability : DefaultAbilities) {
+		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability));
+	}
+
+	for (const TSubclassOf<UGameplayAbility>& Ability : Data.Abilities) {
+		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability));
+	}
 }

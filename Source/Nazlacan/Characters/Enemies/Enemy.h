@@ -25,6 +25,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Corruption", meta = (ClampMin = "0.0", ClampMax = "1.0"))
 	float CorruptionIntensity;
 
+	UPROPERTY(EditAnywhere, Category = "Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
+
 public:
 	AEnemy();
 	virtual void OnConstruction(const FTransform& Transform) override;

@@ -3,6 +3,21 @@
 #include "EnhancedInputComponent.h"
 #include "Nazlacan/Macros.h"
 
+void ACustomPlayerController::BeginPlay() {
+    Super::BeginPlay();
+    LoadInputMode();
+}
+
+void ACustomPlayerController::LoadInputMode() {
+    InputModeGame.SetConsumeCaptureMouseDown(true);
+
+    InputModeUI.SetLockMouseToViewportBehavior(EMouseLockMode::LockOnCapture);
+    InputModeUI.SetHideCursorDuringCapture(false);
+
+    SetInputMode(InputModeGame);
+    bShowMouseCursor = false;
+}
+
 void ACustomPlayerController::OnPossess(APawn* InPawn) {
     Super::OnPossess(InPawn);
     SetControlledCharacter(InPawn);

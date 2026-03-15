@@ -50,7 +50,11 @@ class NAZLACAN_API ACustomPlayerController : public APlayerController {
 private:
 	TWeakObjectPtr<AMainCharacter> ControlledCharacter;
 
+	FInputModeGameOnly InputModeGame;
+	FInputModeGameAndUI InputModeUI;
+
 protected:
+	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
 	virtual void OnRep_Pawn() override;
@@ -70,4 +74,6 @@ private:
 
 	UFUNCTION(BlueprintCallable, Category = "Controller")
 	void SetControlledCharacter(APawn* InPawn);
+
+	void LoadInputMode();
 };

@@ -15,6 +15,7 @@ public class Nazlacan : ModuleRules
 			"PCG",
 			"UMG", "Niagara",
 			"NavigationSystem",
+			"Slate",
 		]);
 
 		// Uncomment if you are using Slate UI

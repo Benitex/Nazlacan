@@ -63,8 +63,24 @@ Mossy grass,
 Lichened rock wall,
 Grass and rubble,
 
+### UI
+
+PapaKilo Font by Emanes Dsign.
+
+Main Menu background picture by [Max Letek](https://unsplash.com/pt-br/@blackprojection?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/pt-br/fotografias/estatueta-de-dragao-cinza-vYFcHzLYpmU?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText).
+
+Skills menu background picture by [Matthew Pearce](https://unsplash.com/pt-br/@matty_pearce?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/pt-br/fotografias/uma-pedra-com-um-desenho-sobre-ela-sentada-na-grama-SiAIgcVqd40?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText).
+
 ### Music and Sound Effects
 
 Jimena Contreras
 
 Aztec Empire, Mayan Ritual, Moonlight in Mexico, Tales from Southern Mexico, The Sax of Ancient Terror
+
+Blue Dot Sessions
+
+[Denton](https://app.sessions.blue/browse/track/367144),
+[Dune Lullaby](https://app.sessions.blue/browse/track/367145),
+[Carrion Chase](https://app.sessions.blue/browse/track/367149),
+[Ferocity of the Hills](https://app.sessions.blue/browse/track/367147),
+[Simos Harbor](https://app.sessions.blue/browse/track/367148)

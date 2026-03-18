@@ -56,6 +56,7 @@ TOptional<FEnemyData> UEnemySpawner::GetRandomEnemyData(FVector Point) const {
 
 	// TODO consider enemy rarity
 
+	if (Biome->Enemies.Num() == 0) return TOptional<FEnemyData>();
 	return LoadDataFromDataTable(getRandomItemFromArray(Biome->Enemies));
 }
 

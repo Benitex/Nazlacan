@@ -71,6 +71,8 @@ Main Menu background picture by [Max Letek](https://unsplash.com/pt-br/@blackpro
 
 Skills menu background picture by [Matthew Pearce](https://unsplash.com/pt-br/@matty_pearce?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/pt-br/fotografias/uma-pedra-com-um-desenho-sobre-ela-sentada-na-grama-SiAIgcVqd40?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText).
 
+Loading screen background picture by [Luis Aceves](https://unsplash.com/pt-br/@wwwgif?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/pt-br/fotografias/uma-sombra-de-um-objeto-circular-em-uma-parede-de-tijolos-3bENUVe9MWY?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText).
+
 ### Music and Sound Effects
 
 Jimena Contreras

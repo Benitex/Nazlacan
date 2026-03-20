@@ -15,12 +15,10 @@ public class Nazlacan : ModuleRules
 			"PCG",
 			"UMG", "Niagara",
 			"NavigationSystem",
-			"Slate",
 		]);
 
-		// Uncomment if you are using Slate UI
-		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-		
+		PrivateDependencyModuleNames.AddRange(["Slate", "SlateCore"]);
+
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
 

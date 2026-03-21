@@ -15,6 +15,7 @@ public class Nazlacan : ModuleRules
 			"PCG",
 			"UMG", "Niagara",
 			"NavigationSystem",
+			"MoviePlayer",
 		]);
 
 		PrivateDependencyModuleNames.AddRange(["Slate", "SlateCore"]);

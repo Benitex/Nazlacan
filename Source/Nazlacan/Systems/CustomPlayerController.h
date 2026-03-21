@@ -51,7 +51,18 @@ private:
 	TWeakObjectPtr<AMainCharacter> ControlledCharacter;
 
 	FInputModeGameOnly InputModeGame;
-	FInputModeGameAndUI InputModeUI;
+	FInputModeGameAndUI InputModeGameAndUI;
+	FInputModeUIOnly InputModeUI;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetInputModeGame();
+
+	UFUNCTION(BlueprintCallable)
+	void SetInputModeGameAndUI();
+
+	UFUNCTION(BlueprintCallable)
+	void SetInputModeUI();
 
 protected:
 	virtual void BeginPlay() override;
@@ -75,5 +86,5 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "Controller")
 	void SetControlledCharacter(APawn* InPawn);
 
-	void LoadInputMode();
+	void LoadInputModes();
 };

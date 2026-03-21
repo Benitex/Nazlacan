@@ -5,17 +5,34 @@
 
 void ACustomPlayerController::BeginPlay() {
     Super::BeginPlay();
-    LoadInputMode();
+    LoadInputModes();
 }
 
-void ACustomPlayerController::LoadInputMode() {
+void ACustomPlayerController::LoadInputModes() {
     InputModeGame.SetConsumeCaptureMouseDown(true);
 
-    InputModeUI.SetLockMouseToViewportBehavior(EMouseLockMode::LockOnCapture);
-    InputModeUI.SetHideCursorDuringCapture(false);
+    InputModeGameAndUI.SetLockMouseToViewportBehavior(EMouseLockMode::LockOnCapture);
+    InputModeGameAndUI.SetHideCursorDuringCapture(false);
 
+    InputModeUI.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+}
+
+void ACustomPlayerController::SetInputModeGame() {
     SetInputMode(InputModeGame);
     bShowMouseCursor = false;
+    bBlockInput = false;
+}
+
+void ACustomPlayerController::SetInputModeGameAndUI() {
+    SetInputMode(InputModeGameAndUI);
+    bShowMouseCursor = true;
+    bBlockInput = false;
+}
+
+void ACustomPlayerController::SetInputModeUI() {
+    SetInputMode(InputModeUI);
+    bShowMouseCursor = true;
+    bBlockInput = true;
 }
 
 void ACustomPlayerController::OnPossess(APawn* InPawn) {

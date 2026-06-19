@@ -33,7 +33,7 @@ struct NAZLACAN_API FEnemyData : public FTableRowBase {
 	float BaseDamage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float CriticalChance = 0.05;
+	float CriticalChance = 0.05f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MovementSpeed;

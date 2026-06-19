@@ -18,9 +18,9 @@ class NAZLACAN_API UEnemySpawner : public UActorComponent {
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TMap<EEnemyRarity, float> RaritySpawnChances = {
-		{EEnemyRarity::Common, 0.6},
-		{EEnemyRarity::Uncommon, 0.3},
-		{EEnemyRarity::Rare, 0.1},
+		{EEnemyRarity::Common, 0.6f},
+		{EEnemyRarity::Uncommon, 0.3f},
+		{EEnemyRarity::Rare, 0.1f},
 	};
 
 private:

@@ -43,7 +43,7 @@ void SLoadingScreen::Construct(const FArguments& InArgs) {
 		SOverlay::Slot().HAlign(HAlign_Right).VAlign(VAlign_Bottom).Padding(
 			FMargin(0, 0, 56, 56)
 		) [
-			SNew(SCircularThrobber).NumPieces(8).Period(1.2).Radius(32)
+			SNew(SCircularThrobber).NumPieces(8).Period(1.2f).Radius(32)
 		]
 	];
 }
